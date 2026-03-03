@@ -1,36 +1,57 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const FormularioLogin = () => {
+  const navigate = useNavigate();
+  const [usuario, setUsuario] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    
+    // Aquí podrías validar contra una base de datos. 
+    // Por ahora, si hay datos, entramos:
+    if (usuario !== '' && password !== '') {
+      console.log("Iniciando sesión...");
+      navigate('/dashboard'); // <--- Esto te lleva a la página principal
+    } else {
+      alert("Por favor, completa todos los campos.");
+    }
+  };
+
   return (
-    <form>
-      <h2>Login</h2>
+    <form onSubmit={handleSubmit}>
+      <h2 style={{ color: '#ffffff', textAlign: 'center', marginBottom: '20px' }}>Login</h2>
       
-      {/* Grupo: Usuario (Imagen 0) */}
       <div className="input-group">
-        <label className="input-label" htmlFor="usuario">Usuario</label>
+        <label style={{ color: '#ffffff', display: 'block', marginBottom: '8px' }}>Usuario</label>
         <input 
           type="text" 
-          id="usuario" 
-          name="usuario"
           className="form-input" 
-          placeholder="Smith" 
+          placeholder="Usuario"
+          value={usuario}
+          onChange={(e) => setUsuario(e.target.value)}
+          style={{ color: '#ffffff', backgroundColor: 'rgba(255,255,255,0.1)', border: '1px solid #ffffff', width: '100%', padding: '12px', borderRadius: '6px' }}
         />
       </div>
       
-      {/* Grupo: Contraseña (Imagen 0) */}
-      <div className="input-group">
-        <label className="input-label" htmlFor="contraseña">Contraseña</label>
+      <div className="input-group" style={{ marginTop: '15px' }}>
+        <label style={{ color: '#ffffff', display: 'block', marginBottom: '8px' }}>Contraseña</label>
         <input 
           type="password" 
-          id="contraseña" 
-          name="contraseña"
           className="form-input" 
           placeholder="•••••" 
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          style={{ color: '#ffffff', backgroundColor: 'rgba(255,255,255,0.1)', border: '1px solid #ffffff', width: '100%', padding: '12px', borderRadius: '6px' }}
         />
       </div>
       
-      {/* Botón: INGRESAR (Imagen 0) */}
-      <button type="submit" className="submit-btn">
+      <button 
+        type="submit" 
+        className="submit-btn" 
+        style={{ width: '100%', padding: '15px', marginTop: '25px', backgroundColor: '#00a8e8', color: 'white', border: 'none', borderRadius: '6px', fontWeight: 'bold', cursor: 'pointer' }}
+      >
         INGRESAR
       </button>
     </form>

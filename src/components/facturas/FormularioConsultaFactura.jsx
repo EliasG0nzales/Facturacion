@@ -1,60 +1,41 @@
 import React from 'react';
 
 const FormularioConsultaFactura = () => {
+  const labelStyle = { color: '#ffffff', display: 'block', marginBottom: '5px', fontSize: '14px' };
+  const inputStyle = { color: '#ffffff', backgroundColor: 'rgba(255,255,255,0.1)', border: '1px solid #ffffff', width: '100%', padding: '10px' };
+
   return (
     <form>
-      <h3>Consulta de documento electrónico</h3>
+      <h3 style={{ color: '#ffffff', textAlign: 'center', marginBottom: '20px' }}>
+        Consulta de documento electrónico
+      </h3>
       
-      {/* Fila 1: RUC del Cliente (Imagen 1) */}
-      <div className="input-group">
-        <label className="input-label" htmlFor="rucCliente">RUC del Cliente:</label>
-        <input 
-          type="text" 
-          id="rucCliente" 
-          name="rucCliente"
-          className="form-input" 
-          placeholder="RUC del Cliente:" 
-        />
+      <div className="input-group" style={{ marginBottom: '15px' }}>
+        <label style={labelStyle}>RUC del Cliente:</label>
+        <input type="text" className="form-input" style={inputStyle} placeholder="Ingrese RUC" />
       </div>
       
-      {/* Fila 2: Tipo de documento y Nro doc (Imagen 1) */}
-      <div className="form-row">
-        <div className="input-group">
-          <label className="input-label" htmlFor="tipoDocumento">Tipo de documento:</label>
-          <select id="tipoDocumento" name="tipoDocumento" className="form-input">
-            <option value="">Tipo de documento:</option>
-            {/* Agrega más opciones aquí */}
+      <div className="form-row" style={{ display: 'flex', gap: '10px', marginBottom: '15px' }}>
+        <div style={{ flex: 1 }}>
+          <label style={labelStyle}>Tipo de documento:</label>
+          <select className="form-input" style={inputStyle}>
+            <option value="" style={{color: '#000'}}>Seleccione...</option>
+            <option value="factura" style={{color: '#000'}}>Factura</option>
+            <option value="boleta" style={{color: '#000'}}>Boleta</option>
           </select>
         </div>
-        
-        <div className="input-group">
-          <label className="input-label" htmlFor="nroDocumento">Nro doc.(xxxx-xxxxxxxx):</label>
-          <input 
-            type="text" 
-            id="nroDocumento" 
-            name="nroDocumento"
-            className="form-input" 
-            placeholder="Nro doc.(xxxx-xxxxxxxx):" 
-          />
+        <div style={{ flex: 1 }}>
+          <label style={labelStyle}>Nro doc.(xxxx-xxxxxxxx):</label>
+          <input type="text" className="form-input" style={inputStyle} placeholder="F001-000001" />
         </div>
       </div>
       
-      {/* Fila 3: Fecha de emisión (Imagen 1) */}
-      <div className="input-group">
-        <label className="input-label" htmlFor="fechaEmision">Fecha de emisión (yyyy-mm-dd):</label>
-        <input 
-          type="date" 
-          id="fechaEmision" 
-          name="fechaEmision"
-          className="form-input" 
-          placeholder="Fecha de emisión (yyyy-mm-dd):" 
-        />
+      <div className="input-group" style={{ marginBottom: '20px' }}>
+        <label style={labelStyle}>Fecha de emisión (yyyy-mm-dd):</label>
+        <input type="date" className="form-input" style={inputStyle} />
       </div>
       
-      {/* Botón: VER DOCUMENTO (Imagen 1) */}
-      <button type="submit" className="submit-btn">
-        VER DOCUMENTO
-      </button>
+      <button type="submit" className="submit-btn">VER DOCUMENTO</button>
     </form>
   );
 };

@@ -1,112 +1,112 @@
-/* Estilos globales para la página de login */
+/* src/index.css */
+:root {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body, html, #root {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+/* Contenedor que abarca toda la pantalla azul */
 .login-page-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
-  background-color: #0077c2; /* Color de fondo azul */
-  font-family: Arial, sans-serif;
-  color: white; /* Color de texto por defecto */
+  width: 100vw;
+  height: 100vh;
+  background-color: #0077c2; /* El azul de tu imagen */
+  position: fixed;
+  top: 0;
+  left: 0;
 }
 
-/* El cuadro central */
+/* El cuadro blanco/azul de login */
 .login-main-box {
-  background-color: #005691; /* Un azul más oscuro para el cuadro */
-  width: 450px; /* Ancho aproximado del cuadro central */
-  border-radius: 8px; /* Bordes redondeados */
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); /* Sombra para el efecto flotante */
-  overflow: hidden; /* Para que las pestañas no se salgan */
+  background-color: #005691; 
+  width: 90%;             /* Se adapta a móviles */
+  max-width: 550px;       /* Ancho grande para escritorio */
+  min-height: 500px;      /* Altura para que no se vea pequeño */
+  border-radius: 15px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
-/* Contenedor de las pestañas en la parte superior */
+/* Estilo de las pestañas superiores */
 .login-tabs-header {
   display: flex;
   width: 100%;
+  height: 70px; /* Más altas */
 }
 
-/* Estilo base para los botones de pestañas */
 .tab-btn {
-  flex: 1; /* Dividir el espacio por igual */
-  padding: 15px;
-  border: none;
-  font-size: 16px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  color: white; /* Texto blanco */
-}
-
-/* Estilo para la pestaña activa */
-.tab-btn.active-tab {
-  background-color: #005691; /* Mismo color que el fondo del cuadro principal */
-}
-
-/* Estilo para las pestañas inactivas */
-.tab-btn.inactive-tab {
-  background-color: #0099cc; /* Un azul más claro */
-}
-
-/* Contenedor principal del formulario */
-.login-content-body {
-  padding: 30px;
-}
-
-.form-wrapper h2, .form-wrapper h3 {
-  text-align: center;
-  margin-bottom: 25px;
-  font-weight: normal;
-}
-
-/* Estilo para los grupos de inputs */
-.input-group {
-  margin-bottom: 20px;
-}
-
-/* Labels */
-.input-label {
-  display: block;
-  margin-bottom: 5px;
-  font-size: 12px;
-  color: rgba(255, 255, 255, 0.7); /* Texto semi-transparente */
-}
-
-/* Estilo para los campos de entrada */
-.form-input {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.3); /* Borde sutil */
-  border-radius: 4px;
-  background-color: transparent; /* Fondo transparente */
-  color: white; /* Texto blanco al escribir */
-  box-sizing: border-box; /* Importante para el padding */
-}
-
-.form-input::placeholder {
-  color: rgba(255, 255, 255, 0.5); /* Placeholder tenue */
-}
-
-/* Estilo para el botón principal */
-.submit-btn {
-  width: 100%;
-  padding: 12px;
-  background-color: #0077c2; /* Color azul para el botón */
-  color: white;
-  border: none;
-  border-radius: 4px;
-  font-size: 16px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.submit-btn:hover {
-  background-color: #005f99; /* Color más oscuro al pasar el mouse */
-}
-
-/* Estilos específicos para la consulta de factura (Imagen 1) */
-.form-row {
-  display: flex;
-  gap: 15px; /* Espacio entre columnas */
-}
-
-.form-row .input-group {
   flex: 1;
+  border: none;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+  color: white;
 }
+
+.tab-btn.active-tab {
+  background-color: #005691; /* Color del fondo del box */
+}
+
+.tab-btn.inactive-tab {
+  background-color: #0199d6; /* Azul más claro */
+}
+
+/* Espaciado interno del formulario */
+.login-content-body {
+  padding: 50px; /* Mucho espacio interno */
+  color: white;
+}
+
+/* Agrandar los Inputs */
+/* Esto hace que el texto que escribes sea blanco */
+.form-input {
+  color: white !important;
+}
+
+/* Esto hace que el texto de ayuda (placeholder) sea blanco grisáceo */
+.form-input::placeholder {
+  color: rgba(255, 255, 255, 0.6) !important;
+}
+
+/* Estilo para que las etiquetas de las pestañas siempre sean blancas */
+.tab-btn {
+  color: white !important;
+}
+
+.form-input:focus {
+  outline: none !important;      /* Quita el borde negro por defecto */
+  border: 1px solid #00d4ff !important; /* Cambia a un borde azul cian */
+  box-shadow: 0 0 10px rgba(0, 212, 255, 0.4); /* Agrega un resplandor elegante */
+  background-color: rgba(255, 255, 255, 0.15); /* Se aclara ligeramente al escribir */
+}
+
+/* Ajuste para los Botones (Ingresar, Ver Documento) */
+.submit-btn:focus {
+  outline: none !important;
+  box-shadow: 0 0 12px rgba(0, 168, 232, 0.6);
+}
+
+/* Ajuste para las Pestañas (Evita que se pongan negras al hacer clic) */
+.tab-btn:focus {
+  outline: none !important;
+}
+
+/* Ajuste para los Selects (Tipo de documento) */
+select.form-input:focus {
+  outline: none !important;
+  background-color: #005691; /* Fondo sólido para que no se pierda el texto */
+}
+
