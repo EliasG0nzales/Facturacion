@@ -22,6 +22,8 @@ const FormularioConsultaFactura = () => {
             <option value="" style={{color: '#000'}}>Seleccione...</option>
             <option value="factura" style={{color: '#000'}}>Factura</option>
             <option value="boleta" style={{color: '#000'}}>Boleta</option>
+            <option value="Nota de Credito" style={{color: '#000'}}>Nota de Credito</option>
+            <option value="nota de Debito" style={{color: '#000'}}>Nota de Debito</option>
           </select>
         </div>
         <div style={{ flex: 1 }}>
