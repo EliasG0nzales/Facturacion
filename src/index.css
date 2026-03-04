@@ -1,3 +1,33 @@
+/* Asegura que el HTML y el Body ocupen todo el alto de la ventana */
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* El contenedor principal de tu App (envuelve Navbar, Contenido y Footer) */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* Alto mínimo de la ventana completa */
+}
+
+/* La sección de contenido principal entre Navbar y Footer */
+.main-content {
+  flex: 1; /* Esto hace que el contenido crezca y empuje el footer hacia abajo */
+  padding-bottom: 30px; /* Un poco de espacio antes del footer */
+}
+
+/* Tu clase de Footer actual (con el fondo azul) */
+.footer {
+  background-color: #005691; /* Color de fondo azul actual */
+  color: white;
+  padding: 40px 20px 20px; /* Padding superior para separar */
+  width: 100%;
+  box-sizing: border-box;
+}
+
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;

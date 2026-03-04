@@ -60,3 +60,41 @@ body{
   margin:auto;
   box-shadow:0 10px 30px rgba(0,0,0,0.2);
 }
+
+/* Reset para evitar márgenes raros */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* Esto evita el hueco blanco abajo */
+}
+
+.main-content {
+  flex: 1; /* Esto estira el contenido principal y empuja al footer hacia abajo */
+  display: flex;
+  flex-direction: column;
+  background-color: #f4f7f6; /* Color de fondo suave para el área de contenido principal */
+  width: 100%;
+}
+
+/* Estilos básicos para el componente navbar (ajustar según tu componente real) */
+.navbar {
+  /* No establecemos altura fija, dejamos que el padding la determine */
+  padding: 20px 40px; /* Dale aire arriba, abajo y a los lados */
+  background-color: #00a8e8; /* Azul claro característico del ejemplo */
+  color: white;
+  width: 100%;
+}
+
+/* Estilos básicos para el componente Footer (ajustar según tu componente real) */
+.footer {
+  padding: 30px;
+  background-color: #005691; /* Azul más oscuro para el footer */
+  color: white;
+  width: 100%;
+}
