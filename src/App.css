@@ -1,100 +1,90 @@
-body{
-  margin:0;
-  font-family:Arial;
-}
-
-.navbar{
-  background:#4aa3c7;
-  padding:15px 40px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  color:white;
-}
-
-.menu{
-  display:flex;
-  gap:20px;
-}
-
-.dropdown{
-  position:relative;
-}
-
-.dropdown-content{
-  display:none;
-  position:absolute;
-  background:white;
-  color:black;
-  min-width:200px;
-}
-
-.dropdown:hover .dropdown-content{
-  display:block;
-}
-
-.dropdown-content a{
-  display:block;
-  padding:10px;
-  text-decoration:none;
-  color:black;
-}
-
-.footer{
-  background:#155f8f;
-  color:white;
-  text-align:center;
-  padding:20px;
-  margin-top:100px;
-}
-
-.content{
-  padding:60px;
-  text-align:center;
-}
-
-.box{
-  background:white;
-  padding:30px;
-  width:400px;
-  margin:auto;
-  box-shadow:0 10px 30px rgba(0,0,0,0.2);
-}
-
-/* Reset para evitar márgenes raros */
+/* 1. RESET GENERAL */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f7f6; /* Gris claro de fondo */
+}
+
+/* 2. ESTRUCTURA PRINCIPAL */
 .app-container {
   display: flex;
   flex-direction: column;
-  min-height: 100vh; /* Esto evita el hueco blanco abajo */
+  min-height: 100vh; /* Ocupa toda la pantalla */
 }
 
 .main-content {
-  flex: 1; /* Esto estira el contenido principal y empuja al footer hacia abajo */
+  flex: 1; /* Empuja el footer al fondo */
+  margin-top: 60px; /* IMPORTANTE: Deja espacio para la Navbar fija */
+  display: flex;
+  justify-content: center; /* Centra el contenido horizontalmente */
+  width: 100%;
+}
+
+/* 3. EL CENTRALIZADO (Contenedor de la página) */
+.container {
+  width: 100%;
+  max-width: 1200px; /* Ancho máximo para que no se estire demasiado */
+  padding: 20px;
   display: flex;
   flex-direction: column;
-  background-color: #f4f7f6; /* Color de fondo suave para el área de contenido principal */
-  width: 100%;
+  gap: 20px;
 }
 
-/* Estilos básicos para el componente navbar (ajustar según tu componente real) */
+/* 4. NAVBAR (Fija y con altura exacta) */
 .navbar {
-  /* No establecemos altura fija, dejamos que el padding la determine */
-  padding: 20px 40px; /* Dale aire arriba, abajo y a los lados */
-  background-color: #00a8e8; /* Azul claro característico del ejemplo */
+  height: 60px;
+  background-color: #00a8e8;
   color: white;
+  position: fixed;
+  top: 0;
   width: 100%;
+  z-index: 9999;
+  display: flex;
+  justify-content: center; /* Centra el contenido interno de la barra */
+  padding: 0 40px;
 }
 
-/* Estilos básicos para el componente Footer (ajustar según tu componente real) */
+/* Contenedor interno de la Navbar para que el logo y menú también estén centralizados */
+.navbar-wrapper {
+  width: 100%;
+  max-width: 1200px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* 5. FOOTER */
 .footer {
   padding: 30px;
-  background-color: #005691; /* Azul más oscuro para el footer */
+  background-color: #005691;
   color: white;
+  text-align: center;
   width: 100%;
+}
+
+/* 6. ESTILOS DE TUS CAJAS/DROPDOWNS */
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background: white;
+  color: black;
+  min-width: 200px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  top: 100%;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+.dropdown-content a {
+  display: block;
+  padding: 10px;
+  text-decoration: none;
+  color: black;
 }
