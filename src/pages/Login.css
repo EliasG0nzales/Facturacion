@@ -110,3 +110,51 @@ select.form-input:focus {
   background-color: #005691; /* Fondo sólido para que no se pierda el texto */
 }
 
+/* Contenedor del grupo */
+.floating-group {
+  position: relative;
+  width: 100%;
+}
+
+/* Estilos del Input (Mantenemos tu diseño pero quitamos el estilo en línea) */
+.floating-group .form-input {
+  color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid #ffffff;
+  width: 100%;
+  padding: 15px 12px; /* Un poco más de padding arriba para equilibrar */
+  border-radius: 6px;
+  font-size: 16px;
+  outline: none;
+  box-sizing: border-box;
+  transition: all 0.3s ease;
+}
+
+/* Estilo inicial de la etiqueta (dentro del cuadro) */
+.floating-label {
+  position: absolute;
+  left: 12px;
+  top: 15px; /* Centrada verticalmente */
+  color: rgba(255, 255, 255, 0.6);
+  pointer-events: none; /* Para que el click pase al input */
+  transition: all 0.2s ease;
+  font-size: 16px;
+}
+
+/* CUANDO SUBE: Cuando el input tiene foco O cuando no está vacío */
+.form-input:focus ~ .floating-label,
+.form-input:not(:placeholder-shown) ~ .floating-label {
+  top: -10px; /* Sube arriba de la barra */
+  left: 8px;
+  font-size: 12px;
+  color: #00a8e8; /* Color azul al activarse */
+  background-color: #005691; /* Fondo para que no se cruce con la línea blanca */
+  padding: 0 5px;
+  font-weight: bold;
+}
+
+/* Cambio de color de borde al enfocar */
+.form-input:focus {
+  border-color: #00a8e8 !important;
+  box-shadow: 0 0 8px rgba(0, 168, 232, 0.4);
+}
