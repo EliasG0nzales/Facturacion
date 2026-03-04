@@ -8,42 +8,41 @@
 /* LA BARRA AZUL (OCUPA TODO EL ANCHO) */
 .nav-inteligente {
   height: 60px;
-  background-color: #00A3E1; /* Azul celeste de la imagen */
+  background-color: #00A3E1;
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
+  width: 99.2%;
   z-index: 9999;
   display: flex;
-  justify-content: center; /* Centra el contenido internamente */
+  align-items: center;
   color: white;
   font-family: Arial, Helvetica, sans-serif;
   box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
-/* EL CONTENEDOR CENTRAL (MAX 1200PX) */
+/* EL CONTENEDOR CENTRAL - SIN MAX-WIDTH PARA QUE OCUPE TODO */
 .wrapper-flush {
   width: 100%;
-  max-width: 1200px;
+  max-width: 1400px;
+  margin: 0 auto;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 20px;
+  padding: 0 30px;
 }
 
 /* LOGO ESTILO ORIGINAL */
-.header-logo {
+.logo-section {
   text-decoration: none;
   color: white;
   font-size: 22px;
   cursor: pointer;
   display: flex;
   align-items: center;
-}
-
-.header-logo i {
   font-style: italic;
-  font-family: serif; /* Para que se vea como el estilo original */
+  letter-spacing: -1px;
+  flex-shrink: 0;
 }
 
 /* CONTENEDOR DE MENÚS (DERECHA) */
@@ -53,7 +52,7 @@
   gap: 5px;
 }
 
-/* BOTONES DE MENÚ (ABM, EGRESOS...) */
+/* BOTONES DE MENÚ */
 .dropbtn {
   background: none;
   border: none;
@@ -61,8 +60,9 @@
   font-weight: bold;
   font-size: 14px;
   cursor: pointer;
-  padding: 21px 12px; /* Altura para centrar texto en los 60px */
+  padding: 21px 12px;
   transition: background 0.3s;
+  white-space: nowrap;
 }
 
 .dropbtn:hover {
@@ -77,13 +77,14 @@
 .dropdown-content {
   display: none;
   position: absolute;
-  top: 100%; /* Aparece justo debajo de la barra */
+  top: 100%;
   left: 0;
   background-color: white;
   min-width: 210px;
   box-shadow: 0px 8px 16px rgba(0,0,0,0.15);
   border-radius: 0 0 4px 4px;
   overflow: visible;
+  z-index: 9999;
 }
 
 .dropdown:hover > .dropdown-content {
@@ -104,7 +105,7 @@
   color: #00A3E1;
 }
 
-/* SUBMENÚS (CMS, CRM, VENTA...) */
+/* SUBMENÚS */
 .submenu {
   position: relative;
 }
@@ -123,12 +124,13 @@
 .submenu-content {
   display: none;
   position: absolute;
-  left: 100%; /* Despliega hacia la derecha */
+  left: 100%;
   top: 0;
   background-color: white;
   min-width: 200px;
   box-shadow: 4px 4px 10px rgba(0,0,0,0.1);
   border-left: 2px solid #00A3E1;
+  z-index: 9999;
 }
 
 .submenu:hover > .submenu-content {
@@ -146,6 +148,7 @@
   cursor: pointer;
   margin: 0 10px;
   border: 1px solid #d60000;
+  white-space: nowrap;
 }
 
 .alerta-roja:hover {
@@ -160,6 +163,7 @@
   padding-left: 15px;
   border-left: 1px solid rgba(255,255,255,0.3);
   font-size: 13px;
+  white-space: nowrap;
 }
 
 .logout-btn {

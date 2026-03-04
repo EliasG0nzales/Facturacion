@@ -7,35 +7,35 @@
 
 body {
   font-family: Arial, sans-serif;
-  background-color: #f4f7f6; /* Gris claro de fondo */
+  background-color: #f4f7f6;
 }
 
 /* 2. ESTRUCTURA PRINCIPAL */
 .app-container {
   display: flex;
   flex-direction: column;
-  min-height: 100vh; /* Ocupa toda la pantalla */
+  min-height: 100vh;
 }
 
 .main-content {
-  flex: 1; /* Empuja el footer al fondo */
-  margin-top: 60px; /* IMPORTANTE: Deja espacio para la Navbar fija */
+  flex: 1;
+  margin-top: 60px;
   display: flex;
-  justify-content: center; /* Centra el contenido horizontalmente */
+  justify-content: center;
   width: 100%;
 }
 
-/* 3. EL CENTRALIZADO (Contenedor de la página) */
+/* 3. CONTENEDOR */
 .container {
   width: 100%;
-  max-width: 1200px; /* Ancho máximo para que no se estire demasiado */
+  max-width: 1200px;
   padding: 20px;
   display: flex;
   flex-direction: column;
   gap: 20px;
 }
 
-/* 4. NAVBAR (Fija y con altura exacta) */
+/* 4. NAVBAR */
 .navbar {
   height: 60px;
   background-color: #00a8e8;
@@ -45,11 +45,10 @@ body {
   width: 100%;
   z-index: 9999;
   display: flex;
-  justify-content: center; /* Centra el contenido interno de la barra */
+  justify-content: center;
   padding: 0 40px;
 }
 
-/* Contenedor interno de la Navbar para que el logo y menú también estén centralizados */
 .navbar-wrapper {
   width: 100%;
   max-width: 1200px;
@@ -58,16 +57,14 @@ body {
   align-items: center;
 }
 
-/* 5. FOOTER */
-.footer {
-  padding: 30px;
-  background-color: #005691;
-  color: white;
-  text-align: center;
-  width: 100%;
+/* 5. FOOTER - eliminamos el viejo .footer y dejamos que Footer.jsx maneje sus propios estilos */
+.footer-subpie,
+.footer-pie {
+  width: 100% !important;
+  display: block !important;
 }
 
-/* 6. ESTILOS DE TUS CAJAS/DROPDOWNS */
+/* 6. DROPDOWNS */
 .dropdown-content {
   display: none;
   position: absolute;

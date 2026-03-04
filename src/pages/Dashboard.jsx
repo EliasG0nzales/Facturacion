@@ -536,7 +536,7 @@ const Dashboard = () => {
   return (
     <>
       <style>{styles}</style>
-      <main className="content" role="main">
+      <div className="content" role="main">
 
         {/* TÍTULO */}
         <div className="t7">
@@ -727,7 +727,7 @@ const Dashboard = () => {
           </div>
         )}
 
-      </main>
+      </div>
     </>
   );
 };

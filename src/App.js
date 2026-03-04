@@ -11,12 +11,15 @@ function App() {
     <Router>
       <div className="app-container">
         <Routes>
+
           <Route path="/" element={<Navigate to="/login" />} />
+
           <Route path="/login" element={<Login />} />
+
           <Route
             path="/dashboard"
             element={
-              <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+              <>
                 <Navbar />
                 <div className="main-content">
                   <div className="container">
@@ -24,9 +27,10 @@ function App() {
                   </div>
                 </div>
                 <Footer />
-              </div>
+              </>
             }
           />
+
         </Routes>
       </div>
     </Router>
