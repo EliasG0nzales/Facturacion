@@ -2,25 +2,25 @@ import React, { useState } from "react";
 
 const styles = `
 
-body {
+ body {
   background-color: #f8f9fa !important;
   color: #212529 !important;
-}
+ }
 
-.page-container * {
-  color: #212529;
-}
+  .page-container * {
+   color: #212529;
+ }
 
-.filtro-section,
-.filtro-section label,
-.filtro-section input,
-.buscar-section b,
-.paginacion,
-.paginacion b,
-.tabla-titulo,
-.leyenda {
-  color: #212529 !important;
-}
+  .filtro-section,
+  .filtro-section label,
+  .filtro-section input,
+  .buscar-section b,
+  .paginacion,
+  .paginacion b,
+  .tabla-titulo,
+  .leyenda {
+   color: #212529 !important;
+  }
 
   .page-container {
     padding: 20px;
