@@ -1,12 +1,12 @@
 import React from 'react';
 
-const CxcTotal = () => {
+const WebMenu = () => {
   return (
     <div style={{padding:'20px'}}>
-      <h2>CxcTotal</h2>
+      <h2>WebMenu</h2>
       <p>Contenido en construcción...</p>
     </div>
   );
 };
 
-export default CxcTotal;
+export default WebMenu;
