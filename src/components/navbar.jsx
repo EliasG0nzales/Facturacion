@@ -146,10 +146,15 @@ function Navbar() {
           </div>
 
           {/* ALERTA CRÉDITO */}
-          <div className="alerta-roja">
-            Credito (02)
-          </div>
-
+          <div className="dropdown">
+            <button className="alerta-roja dropbtn">ALERTA ▼</button>
+            
+            <div className="dropdown-content">
+              <Link to="/tareas">Tareas (1)</Link>
+              <Link to="/credito">Crédito (2)</Link>
+              </div>
+              </div>
+              
           {/* USUARIO */}
           <div className="user-info">
             <span>Juan Quiroz Q.</span>
