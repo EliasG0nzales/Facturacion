@@ -102,12 +102,12 @@ const DatePicker = ({ label, value, onChange }) => {
 const BUSCAR_OPTS = ['Ninguno','Origen','Destino'];
 
 const VISITAS_INICIALES = [
-  { id:1, fecha:'2024-04-01', hora:'08:32', origen:'192.168.1.10',  destino:'/inicio'    },
-  { id:2, fecha:'2024-04-01', hora:'09:15', origen:'190.230.45.12', destino:'/productos' },
-  { id:3, fecha:'2024-04-02', hora:'11:04', origen:'200.14.22.98',  destino:'/nosotros'  },
-  { id:4, fecha:'2024-04-02', hora:'14:50', origen:'201.75.33.55',  destino:'/contacto'  },
-  { id:5, fecha:'2024-04-03', hora:'10:20', origen:'192.168.1.15',  destino:'/productos' },
-  { id:6, fecha:'2024-04-03', hora:'16:45', origen:'190.130.88.21', destino:'/inicio'    },
+  { id:1, fecha:'2026-03-01', hora:'08:32', origen:'192.168.1.10',  destino:'/inicio'    },
+  { id:2, fecha:'2026-03-01', hora:'09:15', origen:'190.230.45.12', destino:'/productos' },
+  { id:3, fecha:'2026-03-02', hora:'11:04', origen:'200.14.22.98',  destino:'/nosotros'  },
+  { id:4, fecha:'2026-03-02', hora:'14:50', origen:'201.75.33.55',  destino:'/contacto'  },
+  { id:5, fecha:'2026-03-03', hora:'10:20', origen:'192.168.1.15',  destino:'/productos' },
+  { id:6, fecha:'2026-03-03', hora:'16:45', origen:'190.130.88.21', destino:'/inicio'    },
 ];
 
 const WebVisita = () => {
