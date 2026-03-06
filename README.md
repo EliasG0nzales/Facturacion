@@ -248,5 +248,8 @@ npm run build
 ---
 
 > © 2009 - 2026 **INTELIGENTE** — Todos los derechos reservados
+---
+
+> © 2009 - 2026 **INTELIGENTE** — Todos los derechos reservados
  
  
