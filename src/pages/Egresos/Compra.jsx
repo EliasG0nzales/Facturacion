@@ -1,12 +1,7 @@
-import React from 'react';
-
-const Compra = () => {
+export default function Compra() {
   return (
-    <div style={{padding:'20px'}}>
-      <h2>Compra</h2>
-      <p>Contenido en construcción...</p>
+    <div>
+      
     </div>
-  );
-};
-
-export default Compra;
+  )
+}
