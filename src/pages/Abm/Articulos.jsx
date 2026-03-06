@@ -57,6 +57,10 @@ const styles = `
   .stock-table td, .stock-table th { border:1px solid #ccc; padding:6px 10px; text-align:center; font-size:13px; }
   .img-preview { width:60px; height:60px; object-fit:cover; border:1px solid #dee2e6; border-radius:4px; }
   .total-row td { font-weight:bold; background:#E6E6E6 !important; color:#212529 !important; padding:8px; }
+  .exportar-section { display:flex; gap:18px; justify-content:flex-end; margin-top:10px; font-size:20px; }
+  .exportar-btn { display:flex; flex-direction:column; align-items:center; gap:2px; cursor:pointer; transition:transform 0.15s; background:none; border:none; padding:0; }
+  .exportar-btn:hover { transform:scale(1.15); }
+  .exportar-label { font-size:10px; font-weight:bold; }
   .exportar-icons { display:flex; gap:10px; justify-content:flex-end; margin-top:8px; }
   .exportar-icons button { background:none; border:none; cursor:pointer; font-size:22px; padding:2px; }
   .exportar-icons button:hover { transform:scale(1.15); }
@@ -137,6 +141,7 @@ const Articulos = () => {
   const [compraFiltros, setCompraFiltros] = useState({doc:'',sucursal:'',tipo:'',texto:'',fei:'',fef:''});
 
   const showMsg = (tipo,texto) => { setMsg({tipo,texto}); setTimeout(()=>setMsg({tipo:'',texto:''}),2500); };
+
   const articulosFiltrados = articulos.filter(a => {
     if (a.tipo!==tipoArticulo) return false;
     if (a.estado!==estadoFiltro) return false;
@@ -148,8 +153,10 @@ const Articulos = () => {
     if (tipoBusqueda==='5') return a.linea.toLowerCase().includes(textoBusqueda.toLowerCase());
     return true;
   });
+
   const abrirNuevo = () => { setForm({...FORM_INICIAL,tipo:tipoArticulo}); setEsNuevo(true); setSpecs([]); setImagenes([]); setInsumos([]); setReporteTab(null); setVista('editar'); };
   const abrirEditar = (a) => { setForm({...a}); setEsNuevo(false); setSpecs([]); setImagenes([]); setInsumos([]); setReporteTab(null); setVista('editar'); };
+
   const guardar = () => {
     if (!form.nomart) return showMsg('danger','El nombre del artículo es obligatorio.');
     if (!form.pcart||!form.pvart) return showMsg('danger','Los precios de compra y venta son obligatorios.');
@@ -157,11 +164,66 @@ const Articulos = () => {
     else { setArticulos(prev=>prev.map(a=>a.id===form.id?{...form}:a)); showMsg('success','Artículo actualizado.'); }
     setVista('lista');
   };
+
   const eliminar = (id) => { if (window.confirm('¿Eliminar este artículo?')) { setArticulos(prev=>prev.filter(a=>a.id!==id)); showMsg('success','Artículo eliminado.'); setVista('lista'); } };
   const agregarSpec = () => { if (!specForm.nombre) return; setSpecs(prev=>[...prev,{...specForm,id:Date.now()}]); setSpecForm({nombre:'',detalle:''}); };
   const handleImagen = (e) => { const file=e.target.files[0]; if(file){const url=URL.createObjectURL(file);setImgPreview({url,nombre:file.name});} };
   const agregarImagen = () => { if(!imgPreview)return; setImagenes(prev=>[...prev,{...imgPreview,orden:imgOrden,id:Date.now()}]); setImgPreview(null); setImgOrden(''); };
   const f = (key,val) => setForm(prev=>({...prev,[key]:val}));
+
+  // ---- EXPORTAR LISTA PRINCIPAL ----
+  const handleImprimirLista = () => {
+    const win = window.open('','_blank');
+    const filas = articulosFiltrados.map((a,i) => `
+      <tr>
+        <td>${i+1}</td><td>${a.codigo}</td><td>${a.nomart}</td>
+        <td align="center">${parseFloat(a.stock||0).toFixed(2)}</td>
+        <td align="right">S/${parseFloat(a.pcart||0).toFixed(2)}</td>
+        <td align="right">S/${parseFloat(a.pvart||0).toFixed(2)}</td>
+        <td align="center">${a.web==='Si'?'Sí':''}</td>
+      </tr>`).join('');
+    win.document.write(`<html><head><title>Listado de Artículos</title>
+      <style>body{font-family:Arial,sans-serif;font-size:12px;}h2{color:#17a2b8;border-bottom:2px solid #17a2b8;padding-bottom:5px;}table{border-collapse:collapse;width:100%;}th,td{border:1px solid #ccc;padding:6px 8px;}th{background:#17a2b8;color:#fff;}</style>
+      </head><body><h2>📦 LISTADO GENERAL DE ARTÍCULOS</h2>
+      <table><thead><tr><th>Nro</th><th>Código</th><th>Detalle</th><th>Stock</th><th>P.Compra</th><th>P.Venta</th><th>Web</th></tr></thead>
+      <tbody>${filas}</tbody></table>
+      <p style="font-size:11px;color:#888;margin-top:12px;">Total: ${articulosFiltrados.length} registro(s)</p>
+      </body></html>`);
+    win.document.close(); win.print();
+  };
+
+  const handleExcelLista = () => {
+    const encabezado = ['Nro','Código','Detalle','Stock','P.Compra','P.Venta','Web'];
+    const filas = articulosFiltrados.map((a,i) =>
+      [i+1, a.codigo, `"${a.nomart}"`, parseFloat(a.stock||0).toFixed(2),
+       parseFloat(a.pcart||0).toFixed(2), parseFloat(a.pvart||0).toFixed(2), a.web].join(',')
+    );
+    const csv = [encabezado.join(','), ...filas].join('\n');
+    const blob = new Blob(['\uFEFF'+csv], {type:'text/csv;charset=utf-8;'});
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'articulos.csv'; a.click();
+    URL.revokeObjectURL(a.href);
+    showMsg('success','Archivo Excel (CSV) descargado correctamente.');
+  };
+
+  const handleWordLista = () => {
+    const filas = articulosFiltrados.map((a,i) => `
+      <tr><td>${i+1}</td><td>${a.codigo}</td><td>${a.nomart}</td>
+      <td>${parseFloat(a.stock||0).toFixed(2)}</td>
+      <td>S/${parseFloat(a.pcart||0).toFixed(2)}</td>
+      <td>S/${parseFloat(a.pvart||0).toFixed(2)}</td>
+      <td>${a.web==='Si'?'Sí':''}</td></tr>`).join('');
+    const html = `<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+      <head><meta charset='utf-8'><title>Artículos</title>
+      <style>body{font-family:Arial,sans-serif;font-size:12pt;}h2{color:#17a2b8;}table{width:100%;border-collapse:collapse;}th{background:#17a2b8;color:white;padding:6px;border:1px solid #ccc;}td{padding:5px 6px;border:1px solid #ccc;}</style>
+      </head><body><h2>LISTADO GENERAL DE ARTÍCULOS</h2>
+      <table><thead><tr><th>Nro</th><th>Código</th><th>Detalle</th><th>Stock</th><th>P.Compra</th><th>P.Venta</th><th>Web</th></tr></thead>
+      <tbody>${filas}</tbody></table>
+      <p>Total: ${articulosFiltrados.length} registro(s)</p></body></html>`;
+    const blob = new Blob([html], {type:'application/msword'});
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'articulos.doc'; a.click();
+    URL.revokeObjectURL(a.href);
+    showMsg('success','Archivo Word descargado correctamente.');
+  };
 
   // totales ventas
   const totalVentaCant = VENTAS_DATA.reduce((s,v)=>s+parseFloat(v.cant||0),0);
@@ -215,11 +277,23 @@ const Articulos = () => {
             ))}
           </tbody>
         </table>
-        <div style={{display:'flex',gap:12,justifyContent:'flex-end',marginTop:10,fontSize:20}}>
-          <span title="Imprimir" style={{cursor:'pointer'}}>🖨️</span>
-          <span title="Excel" style={{cursor:'pointer',color:'#39B636'}}>📗</span>
-          <span title="Word" style={{cursor:'pointer',color:'#3333CC'}}>📘</span>
+
+        {/* EXPORTAR LISTA PRINCIPAL */}
+        <div className="exportar-section">
+          <button className="exportar-btn" title="Imprimir" onClick={handleImprimirLista}>
+            🖨️
+            <span className="exportar-label" style={{color:'#555'}}>Imprimir</span>
+          </button>
+          <button className="exportar-btn" title="Exportar Excel" onClick={handleExcelLista}>
+            📗
+            <span className="exportar-label" style={{color:'#39B636'}}>Excel</span>
+          </button>
+          <button className="exportar-btn" title="Exportar Word" onClick={handleWordLista}>
+            📘
+            <span className="exportar-label" style={{color:'#3333CC'}}>Word</span>
+          </button>
         </div>
+
         <hr style={{margin:'15px 0',borderColor:'#dee2e6'}} />
         <div style={{fontSize:12,borderTop:'1px solid #dee2e6',paddingTop:10}}><b>Leyenda: </b><span style={{color:'#17a2b8'}}>✏️</span> Actualizar, Eliminar &nbsp;&nbsp;<span style={{color:'#6f42c1'}}>📋</span> Generar Kardex</div>
       </div>
@@ -370,7 +444,6 @@ const Articulos = () => {
             {reporteTab==='ventas'&&(
               <div style={{marginBottom:16}}>
                 <div style={{fontWeight:'bold',fontSize:14,textAlign:'center',marginBottom:10}}>LISTADO REPORTE DE VENTA DETALLADO</div>
-                {/* FILTROS */}
                 <div style={{border:'1px solid #dee2e6',padding:'10px',borderRadius:4,marginBottom:10}}>
                   <div style={{display:'flex',gap:8,flexWrap:'wrap',alignItems:'center',marginBottom:8}}>
                     <b style={{fontSize:13}}>BUSCAR X</b>
@@ -396,7 +469,6 @@ const Articulos = () => {
                     <button className="botonNuevo" style={{padding:'5px 14px'}}>🔍 Buscar</button>
                   </div>
                 </div>
-                {/* TABLA VENTAS */}
                 <table id="tabla-ventas">
                   <thead>
                     <tr className="thead-gray">
@@ -417,13 +489,9 @@ const Articulos = () => {
                   </tbody>
                 </table>
                 <div className="exportar-icons">
-                  <button title="Imprimir" onClick={()=>imprimirTabla('tabla-ventas','Reporte Venta Detallado')}>🖨️</button>
-                  <button title="Exportar Excel" onClick={()=>exportarExcel('tabla-ventas','reporte_ventas')}>
-                    <span style={{color:'#39B636',fontSize:22}}>📗</span>
-                  </button>
-                  <button title="Exportar Word" onClick={()=>exportarWord('tabla-ventas','Reporte Venta Detallado','reporte_ventas')}>
-                    <span style={{color:'#3333CC',fontSize:22}}>📘</span>
-                  </button>
+                  <button title="Imprimir" onClick={()=>imprimirTabla('tabla-ventas','Reporte Venta Detallado')}>🖨️<br/><span style={{fontSize:10,color:'#555'}}>Imprimir</span></button>
+                  <button title="Exportar Excel" onClick={()=>exportarExcel('tabla-ventas','reporte_ventas')}><span style={{color:'#39B636',fontSize:22}}>📗</span><br/><span style={{fontSize:10,color:'#39B636'}}>Excel</span></button>
+                  <button title="Exportar Word" onClick={()=>exportarWord('tabla-ventas','Reporte Venta Detallado','reporte_ventas')}><span style={{color:'#3333CC',fontSize:22}}>📘</span><br/><span style={{fontSize:10,color:'#3333CC'}}>Word</span></button>
                 </div>
               </div>
             )}
@@ -432,7 +500,6 @@ const Articulos = () => {
             {reporteTab==='compras'&&(
               <div style={{marginBottom:16}}>
                 <div style={{fontWeight:'bold',fontSize:14,textAlign:'center',marginBottom:10}}>REPORTE DE COMPRA DETALLADO</div>
-                {/* FILTROS */}
                 <div style={{border:'1px solid #dee2e6',padding:'10px',borderRadius:4,marginBottom:10}}>
                   <div style={{display:'flex',gap:8,flexWrap:'wrap',alignItems:'center',marginBottom:8}}>
                     <b style={{fontSize:13}}>BUSCAR X</b>
@@ -455,7 +522,6 @@ const Articulos = () => {
                     <button className="botonNuevo" style={{padding:'5px 14px'}}>🔍 Buscar</button>
                   </div>
                 </div>
-                {/* TABLA COMPRAS */}
                 <table id="tabla-compras">
                   <thead>
                     <tr className="thead-gray">
@@ -472,13 +538,9 @@ const Articulos = () => {
                   </tbody>
                 </table>
                 <div className="exportar-icons">
-                  <button title="Imprimir" onClick={()=>imprimirTabla('tabla-compras','Reporte Compra Detallado')}>🖨️</button>
-                  <button title="Exportar Excel" onClick={()=>exportarExcel('tabla-compras','reporte_compras')}>
-                    <span style={{color:'#39B636',fontSize:22}}>📗</span>
-                  </button>
-                  <button title="Exportar Word" onClick={()=>exportarWord('tabla-compras','Reporte Compra Detallado','reporte_compras')}>
-                    <span style={{color:'#3333CC',fontSize:22}}>📘</span>
-                  </button>
+                  <button title="Imprimir" onClick={()=>imprimirTabla('tabla-compras','Reporte Compra Detallado')}>🖨️<br/><span style={{fontSize:10,color:'#555'}}>Imprimir</span></button>
+                  <button title="Exportar Excel" onClick={()=>exportarExcel('tabla-compras','reporte_compras')}><span style={{color:'#39B636',fontSize:22}}>📗</span><br/><span style={{fontSize:10,color:'#39B636'}}>Excel</span></button>
+                  <button title="Exportar Word" onClick={()=>exportarWord('tabla-compras','Reporte Compra Detallado','reporte_compras')}><span style={{color:'#3333CC',fontSize:22}}>📘</span><br/><span style={{fontSize:10,color:'#3333CC'}}>Word</span></button>
                 </div>
               </div>
             )}

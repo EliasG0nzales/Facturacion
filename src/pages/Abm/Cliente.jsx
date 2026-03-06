@@ -215,19 +215,19 @@ const styles = `
   /* MODAL */
   .modal-backdrop {
     position: fixed; top:0; left:0; width:100%; height:100%;
-    background: rgba(0,0,0,0.4);
+    background: rgba(0, 0, 0, 0.55);
     display: flex; align-items: center; justify-content: center;
     z-index: 2000;
   }
 
   .modal-box {
-    background: #fff;
-    border-radius: 6px;
+    background: #ffffff;
+    border-radius: 8px;
     padding: 24px 28px;
     min-width: 380px;
     max-width: 500px;
     width: 100%;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
   }
 
   .modal-title {
@@ -257,6 +257,12 @@ const styles = `
     border-radius: 4px;
     font-size: 13px;
     color: #212529;
+    background: #ffffff;
+    box-sizing: border-box;
+  }
+
+  .modal-field input::placeholder {
+    color: #adb5bd;
   }
 
   .modal-field input:focus,
@@ -402,6 +408,86 @@ const Cliente = () => {
       setClientes((prev) => prev.filter((c) => c.id !== id));
       showMsg("success", "Cliente eliminado.");
     }
+  };
+
+  const handleImprimir = () => {
+    const contenido = `
+      <html><head><title>Listado de Clientes</title>
+      <style>
+        body { font-family: Arial, sans-serif; font-size: 13px; }
+        h2 { color: #17a2b8; border-bottom: 2px solid #17a2b8; padding-bottom: 5px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th { background: #17a2b8; color: #fff; padding: 8px; text-align: left; }
+        td { padding: 7px 8px; border-bottom: 1px solid #dee2e6; }
+        tr:nth-child(even) { background: #f8f9fa; }
+      </style></head><body>
+      <h2>👤 LISTADO GENERAL DE CLIENTES</h2>
+      <table>
+        <thead><tr><th>Nro</th><th>Nombre</th><th>Dpto</th><th>RUC</th><th>Teléfono</th><th>Vendedor</th></tr></thead>
+        <tbody>
+          ${clientesFiltrados.map((c, i) => `
+            <tr>
+              <td>${i + 1}</td><td>${c.nombre}</td><td>${c.dpto}</td>
+              <td>${c.ruc}</td><td>${c.telefono}</td><td>${c.vendedor}</td>
+            </tr>`).join("")}
+        </tbody>
+      </table>
+      <p style="margin-top:15px;font-size:11px;color:#888;">Total: ${clientesFiltrados.length} registro(s)</p>
+      </body></html>`;
+    const ventana = window.open("", "_blank");
+    ventana.document.write(contenido);
+    ventana.document.close();
+    ventana.print();
+  };
+
+  const handleExportarExcel = () => {
+    const encabezado = ["Nro", "Nombre", "Dpto", "RUC", "Teléfono", "Vendedor"];
+    const filas = clientesFiltrados.map((c, i) =>
+      [i + 1, `"${c.nombre}"`, c.dpto, c.ruc, c.telefono, `"${c.vendedor}"`].join(",")
+    );
+    const csv = [encabezado.join(","), ...filas].join("\n");
+    const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "clientes.csv";
+    a.click();
+    URL.revokeObjectURL(url);
+    showMsg("success", "Archivo Excel (CSV) descargado correctamente.");
+  };
+
+  const handleExportarWord = () => {
+    const contenido = `
+      <html xmlns:o='urn:schemas-microsoft-com:office:office'
+            xmlns:w='urn:schemas-microsoft-com:office:word'
+            xmlns='http://www.w3.org/TR/REC-html40'>
+      <head><meta charset='utf-8'><title>Clientes</title>
+      <style>
+        body { font-family: Arial, sans-serif; font-size: 12pt; }
+        h2 { color: #17a2b8; }
+        table { width: 100%; border-collapse: collapse; }
+        th { background: #17a2b8; color: white; padding: 6px; border: 1px solid #ccc; }
+        td { padding: 5px 6px; border: 1px solid #ccc; }
+      </style></head><body>
+      <h2>LISTADO GENERAL DE CLIENTES</h2>
+      <table>
+        <thead><tr><th>Nro</th><th>Nombre</th><th>Dpto</th><th>RUC</th><th>Teléfono</th><th>Vendedor</th></tr></thead>
+        <tbody>
+          ${clientesFiltrados.map((c, i) => `
+            <tr><td>${i + 1}</td><td>${c.nombre}</td><td>${c.dpto}</td>
+            <td>${c.ruc}</td><td>${c.telefono}</td><td>${c.vendedor}</td></tr>`).join("")}
+        </tbody>
+      </table>
+      <p>Total: ${clientesFiltrados.length} registro(s)</p>
+      </body></html>`;
+    const blob = new Blob([contenido], { type: "application/msword" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "clientes.doc";
+    a.click();
+    URL.revokeObjectURL(url);
+    showMsg("success", "Archivo Word descargado correctamente.");
   };
 
   return (
@@ -551,12 +637,17 @@ const Cliente = () => {
 
         {/* EXPORTAR */}
         <div className="exportar-section">
-          <span title="Imprimir">🖨️</span>
-          <span title="Exportar Excel" style={{ color: "#39B636" }}>
-            📗
+          <span title="Imprimir" onClick={handleImprimir} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2, cursor: "pointer" }}>
+            🖨️
+            <span style={{ fontSize: 10, color: "#555", fontWeight: "bold" }}>Imprimir</span>
           </span>
-          <span title="Exportar Word" style={{ color: "#3333CC" }}>
+          <span title="Exportar Excel" onClick={handleExportarExcel} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2, cursor: "pointer", color: "#39B636" }}>
+            📗
+            <span style={{ fontSize: 10, color: "#39B636", fontWeight: "bold" }}>Excel</span>
+          </span>
+          <span title="Exportar Word" onClick={handleExportarWord} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2, cursor: "pointer", color: "#3333CC" }}>
             📘
+            <span style={{ fontSize: 10, color: "#3333CC", fontWeight: "bold" }}>Word</span>
           </span>
         </div>
 

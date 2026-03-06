@@ -147,18 +147,27 @@ const styles = `
 
   .exportar-section {
     display: flex;
-    gap: 12px;
+    gap: 18px;
     justify-content: flex-end;
     margin-top: 10px;
     font-size: 20px;
   }
 
-  .exportar-section span {
+  .exportar-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
     cursor: pointer;
     transition: transform 0.15s;
   }
 
-  .exportar-section span:hover { transform: scale(1.2); }
+  .exportar-btn:hover { transform: scale(1.15); }
+
+  .exportar-label {
+    font-size: 10px;
+    font-weight: bold;
+  }
 
   /* MODAL */
   .modal-backdrop {
@@ -206,7 +215,10 @@ const styles = `
     font-size: 13px;
     color: #212529;
     background: #fff;
+    box-sizing: border-box;
   }
+
+  .modal-field input::placeholder { color: #adb5bd; }
 
   .modal-field input:focus,
   .modal-field select:focus {
@@ -331,6 +343,80 @@ const Proveedor = () => {
     }
   };
 
+  const handleImprimir = () => {
+    const contenido = `
+      <html><head><title>Listado de Proveedores</title>
+      <style>
+        body { font-family: Arial, sans-serif; font-size: 13px; }
+        h2 { color: #17a2b8; border-bottom: 2px solid #17a2b8; padding-bottom: 5px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th { background: #17a2b8; color: #fff; padding: 8px; text-align: left; }
+        td { padding: 7px 8px; border-bottom: 1px solid #dee2e6; }
+        tr:nth-child(even) { background: #f8f9fa; }
+      </style></head><body>
+      <h2>🏭 LISTADO GENERAL DE PROVEEDORES</h2>
+      <table>
+        <thead><tr><th>Nro</th><th>Tipo</th><th>Nombre</th><th>RUC</th><th>Teléfono</th><th>Contacto</th></tr></thead>
+        <tbody>
+          ${proveedoresFiltrados.map((p, i) => `
+            <tr><td>${i + 1}</td><td>${p.tipo}</td><td>${p.nombre}</td>
+            <td>${p.ruc}</td><td>${p.telefono}</td><td>${p.contacto}</td></tr>`).join('')}
+        </tbody>
+      </table>
+      <p style="margin-top:15px;font-size:11px;color:#888;">Total: ${proveedoresFiltrados.length} registro(s)</p>
+      </body></html>`;
+    const ventana = window.open('', '_blank');
+    ventana.document.write(contenido);
+    ventana.document.close();
+    ventana.print();
+  };
+
+  const handleExportarExcel = () => {
+    const encabezado = ['Nro', 'Tipo', 'Nombre', 'RUC', 'Teléfono', 'Contacto'];
+    const filas = proveedoresFiltrados.map((p, i) =>
+      [i + 1, p.tipo, `"${p.nombre}"`, p.ruc, p.telefono, `"${p.contacto}"`].join(',')
+    );
+    const csv = [encabezado.join(','), ...filas].join('\n');
+    const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'proveedores.csv'; a.click();
+    URL.revokeObjectURL(url);
+    showMsg('success', 'Archivo Excel (CSV) descargado correctamente.');
+  };
+
+  const handleExportarWord = () => {
+    const contenido = `
+      <html xmlns:o='urn:schemas-microsoft-com:office:office'
+            xmlns:w='urn:schemas-microsoft-com:office:word'
+            xmlns='http://www.w3.org/TR/REC-html40'>
+      <head><meta charset='utf-8'><title>Proveedores</title>
+      <style>
+        body { font-family: Arial, sans-serif; font-size: 12pt; }
+        h2 { color: #17a2b8; }
+        table { width: 100%; border-collapse: collapse; }
+        th { background: #17a2b8; color: white; padding: 6px; border: 1px solid #ccc; }
+        td { padding: 5px 6px; border: 1px solid #ccc; }
+      </style></head><body>
+      <h2>LISTADO GENERAL DE PROVEEDORES</h2>
+      <table>
+        <thead><tr><th>Nro</th><th>Tipo</th><th>Nombre</th><th>RUC</th><th>Teléfono</th><th>Contacto</th></tr></thead>
+        <tbody>
+          ${proveedoresFiltrados.map((p, i) => `
+            <tr><td>${i + 1}</td><td>${p.tipo}</td><td>${p.nombre}</td>
+            <td>${p.ruc}</td><td>${p.telefono}</td><td>${p.contacto}</td></tr>`).join('')}
+        </tbody>
+      </table>
+      <p>Total: ${proveedoresFiltrados.length} registro(s)</p>
+      </body></html>`;
+    const blob = new Blob([contenido], { type: 'application/msword' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'proveedores.doc'; a.click();
+    URL.revokeObjectURL(url);
+    showMsg('success', 'Archivo Word descargado correctamente.');
+  };
+
   return (
     <>
       <style>{styles}</style>
@@ -412,9 +498,18 @@ const Proveedor = () => {
 
         {/* EXPORTAR */}
         <div className="exportar-section">
-          <span title="Imprimir">🖨️</span>
-          <span title="Exportar Excel" style={{ color: '#39B636' }}>📗</span>
-          <span title="Exportar Word"  style={{ color: '#3333CC' }}>📘</span>
+          <span className="exportar-btn" title="Imprimir" onClick={handleImprimir}>
+            🖨️
+            <span className="exportar-label" style={{ color: '#555' }}>Imprimir</span>
+          </span>
+          <span className="exportar-btn" title="Exportar Excel" onClick={handleExportarExcel}>
+            📗
+            <span className="exportar-label" style={{ color: '#39B636' }}>Excel</span>
+          </span>
+          <span className="exportar-btn" title="Exportar Word" onClick={handleExportarWord}>
+            📘
+            <span className="exportar-label" style={{ color: '#3333CC' }}>Word</span>
+          </span>
         </div>
 
         <hr style={{ margin: '15px 0', borderColor: '#dee2e6' }} />
