@@ -253,6 +253,186 @@ color:#333;
 .leyenda-item svg{
 display:block;
 }
+
+/* Formulario ORDEN DE COMPRA: NUEVO */
+.form-nuevo-titulo{
+font-size:18px;
+font-weight:bold;
+border-bottom:2px solid #00A3E1;
+padding-bottom:8px;
+margin-bottom:16px;
+color:#333;
+}
+.form-nuevo{ overflow:visible; }
+.form-nuevo .form-row{
+display:flex;
+flex-wrap:wrap;
+gap:12px 20px;
+align-items:flex-end;
+margin-bottom:12px;
+}
+.form-nuevo .form-field{
+display:flex;
+flex-direction:column;
+gap:4px;
+min-width:0;
+}
+.form-nuevo .form-field label{
+font-weight:bold;
+font-size:12px;
+color:#333;
+}
+.form-nuevo input[type="text"],
+.form-nuevo input[type="number"],
+.form-nuevo select{
+padding:6px 8px;
+border:1px solid #ced4da;
+border-radius:4px;
+font-size:13px;
+background:#fff;
+color:#212529;
+min-width:80px;
+}
+.form-nuevo select{
+cursor:pointer;
+height:34px;
+min-height:34px;
+}
+.form-nuevo select option{
+color:#212529;
+background:#fff;
+}
+.form-nuevo .num-spin{
+height:34px;
+padding-right:26px;
+}
+.form-nuevo .num-spin::-webkit-outer-spin-button,
+.form-nuevo .num-spin::-webkit-inner-spin-button{
+width:18px;
+height:100%;
+margin:0;
+background:#e9f7ef;
+border-left:1px solid #b7dfb7;
+border-radius:0 4px 4px 0;
+cursor:pointer;
+}
+.form-nuevo .num-spin::-webkit-inner-spin-button:hover,
+.form-nuevo .num-spin::-webkit-outer-spin-button:hover{
+background:#d4edda;
+}
+.form-nuevo .form-field.condicion-wrap{ overflow:visible; }
+.condicion-line{
+display:flex;
+align-items:center;
+gap:8px;
+flex-wrap:wrap;
+}
+.condicion-line .dias-input{
+width:70px;
+}
+.condicion-line .dias-label{
+font-size:12px;
+color:#333;
+}
+.condicion-dropdown{
+position:relative;
+min-width:140px;
+overflow:visible;
+}
+.condicion-dropdown .condicion-trigger{
+width:100%;
+padding:6px 28px 6px 8px;
+border:1px solid #ced4da;
+border-radius:4px;
+font-size:13px;
+background:#fff;
+cursor:pointer;
+text-align:left;
+appearance:none;
+-webkit-appearance:none;
+-moz-appearance:none;
+background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23333' d='M6 8L2 4h8z'/%3E%3C/svg%3E");
+background-repeat:no-repeat;
+background-position:right 8px center;
+}
+.condicion-dropdown .condicion-list{
+position:absolute;
+top:100%;
+left:0;
+right:0;
+margin-top:4px;
+border:1px solid #ced4da;
+border-radius:4px;
+background:#fff;
+box-shadow:0 4px 12px rgba(0,0,0,0.2);
+z-index:9999;
+list-style:none;
+padding:0;
+min-width:100%;
+}
+.condicion-dropdown .condicion-list li{
+padding:8px 12px;
+cursor:pointer;
+font-size:13px;
+}
+.condicion-dropdown .condicion-list li:hover{
+background:#e9ecef;
+}
+.condicion-dropdown .condicion-list li.condicion-selected{
+background:#00A3E1;
+color:#fff;
+}
+.condicion-dropdown .condicion-list li.condicion-selected:hover{
+background:#0092c9;
+color:#fff;
+}
+.form-nuevo .input-required{
+background-color:#d4edda !important;
+}
+.form-nuevo .date-wrap input{ background-color:#d4edda; }
+.form-nuevo .checkbox-row{ display:flex; align-items:center; gap:8px; }
+.form-nuevo .checkbox-row input[type="checkbox"]{ width:18px; height:18px; }
+.busqueda-articulos{
+margin-top:20px;
+margin-bottom:12px;
+}
+.busqueda-articulos .titulo{
+font-weight:bold;
+margin-bottom:8px;
+display:flex;
+align-items:center;
+gap:8px;
+}
+.busqueda-articulos .filtros{
+display:flex;
+flex-wrap:wrap;
+align-items:center;
+gap:10px;
+margin-bottom:8px;
+}
+.busqueda-articulos .filtros label{ display:inline-flex; align-items:center; gap:4px; cursor:pointer; }
+.busqueda-articulos .input-buscar{ max-width:280px; }
+.busqueda-articulos .btn-buscar-art{
+background:#00A3E1;
+color:#fff;
+border:1px solid #00A3E1;
+padding:6px 12px;
+border-radius:4px;
+cursor:pointer;
+font-size:13px;
+display:inline-flex;
+align-items:center;
+gap:6px;
+}
+.tabla-articulos{ margin-top:12px; margin-bottom:16px; }
+.tabla-articulos .headTitle td{ padding:8px 6px; font-size:12px; }
+.form-nuevo .botones-form{
+display:flex;
+gap:10px;
+margin-top:16px;
+}
+.form-nuevo .botones-form .btn-guardar{ background:#00A3E1; color:#fff; border:1px solid #00A3E1; padding:8px 16px; border-radius:4px; cursor:pointer; font-weight:bold; display:inline-flex; align-items:center; gap:6px; }
+.form-nuevo .botones-form .btn-regresar{ background:#6c757d; color:#fff; border:1px solid #6c757d; padding:8px 16px; border-radius:4px; cursor:pointer; font-weight:bold; display:inline-flex; align-items:center; gap:6px; }
 `;
 
 const IconEdit = ({ size = 16, color = "#000" }) => (
@@ -358,7 +538,21 @@ const IconCalendar = ({ size = 18 }) => (
   </svg>
 );
 
+const IconFloppy = ({ size = 16, color = "#fff" }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M17 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V7l-4-4zm-5 16a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm5-10H7V7h10v2z" fill={color} />
+  </svg>
+);
+
+const IconArrowLeft = ({ size = 16, color = "#fff" }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" fill={color} />
+  </svg>
+);
+
 const OrdenCompra = () => {
+
+const [showFormNuevo, setShowFormNuevo] = useState(false);
 
 const [tipoBusqueda,setTipoBusqueda] = useState("nrodoc");
 const [textoBusqueda,setTextoBusqueda] = useState("");
@@ -369,6 +563,23 @@ const fechaInicioRef = useRef(null);
 const fechaFinRef = useRef(null);
 
 const [registros] = useState([]);
+
+const hoy = "2026-03-06";
+const [nroOrden, setNroOrden] = useState("1");
+const [fecha, setFecha] = useState(hoy);
+const [fechaEnt, setFechaEnt] = useState(hoy);
+const [moneda, setMoneda] = useState("Soles");
+const [cambio, setCambio] = useState("3.830");
+const [incluidoIgv, setIncluidoIgv] = useState(false);
+const [garantia, setGarantia] = useState("");
+const [proveedor, setProveedor] = useState("");
+const [direccionEntrega, setDireccionEntrega] = useState("Av. Inca Garcilaso De La Vega 134");
+const [condicionCompra, setCondicionCompra] = useState("Contado");
+const [diasCredito, setDiasCredito] = useState("");
+const [textoBusquedaArt, setTextoBusquedaArt] = useState("");
+const [tipoBusquedaArt, setTipoBusquedaArt] = useState("nombre");
+const fechaNuevoRef = useRef(null);
+const fechaEntNuevoRef = useRef(null);
 
 const registrosFiltrados = useMemo(()=>{
 
@@ -420,6 +631,118 @@ return(
 
 <div className="content">
 
+{showFormNuevo ? (
+  <div className="form-nuevo">
+    <div className="form-nuevo-titulo">ORDEN DE COMPRA: NUEVO</div>
+
+    <div className="form-row">
+      <div className="form-field">
+        <label>Nro orden (*)</label>
+        <input type="number" className="input-required num-spin" value={nroOrden} onChange={(e) => setNroOrden(e.target.value)} />
+      </div>
+      <div className="form-field">
+        <label>Fecha (*)</label>
+        <div className="date-wrap">
+          <input ref={fechaNuevoRef} type="date" className="input-required" value={fecha} onChange={(e) => setFecha(e.target.value)} />
+          <button type="button" className="date-btn" aria-label="Fecha" onClick={() => openPicker(fechaNuevoRef)}><IconCalendar /></button>
+        </div>
+      </div>
+      <div className="form-field">
+        <label>Fecha Ent(*)</label>
+        <div className="date-wrap">
+          <input ref={fechaEntNuevoRef} type="date" className="input-required" value={fechaEnt} onChange={(e) => setFechaEnt(e.target.value)} />
+          <button type="button" className="date-btn" aria-label="Fecha entrega" onClick={() => openPicker(fechaEntNuevoRef)}><IconCalendar /></button>
+        </div>
+      </div>
+      <div className="form-field">
+        <label>Moneda(*)</label>
+        <select value={moneda} onChange={(e) => setMoneda(e.target.value)}>
+          <option>Soles</option>
+          <option>Dólares</option>
+        </select>
+      </div>
+      <div className="form-field">
+        <label>Cambio : (*)</label>
+        <input type="text" value={cambio} onChange={(e) => setCambio(e.target.value)} />
+      </div>
+      <div className="form-field checkbox-row">
+        <label><input type="checkbox" checked={incluidoIgv} onChange={(e) => setIncluidoIgv(e.target.checked)} /> Incluido IGV</label>
+      </div>
+      <div className="form-field">
+        <label>Garantia (*)</label>
+        <input type="text" value={garantia} onChange={(e) => setGarantia(e.target.value)} placeholder="Meses" />
+      </div>
+    </div>
+
+    <div className="form-row">
+      <div className="form-field" style={{ minWidth: "200px" }}>
+        <label>PROVEEDOR (*)..+</label>
+        <input type="text" className="input-required" value={proveedor} onChange={(e) => setProveedor(e.target.value)} placeholder="Seleccionar..." />
+      </div>
+      <div className="form-field" style={{ flex: 1, minWidth: "200px" }}>
+        <label>Direccion de entrega(*)</label>
+        <input type="text" className="input-required" value={direccionEntrega} onChange={(e) => setDireccionEntrega(e.target.value)} />
+      </div>
+      <div className="form-field condicion-wrap">
+        <label>Condicion de Compra :</label>
+        <div className="condicion-line">
+          <select value={condicionCompra} onChange={(e) => setCondicionCompra(e.target.value)}>
+            <option value="Contado">Contado</option>
+            <option value="Crédito">Crédito</option>
+          </select>
+          {condicionCompra === "Crédito" && (
+            <>
+              <input
+                type="text"
+                className="dias-input"
+                value={diasCredito}
+                onChange={(e) => setDiasCredito(e.target.value)}
+              />
+              <span className="dias-label">Dias</span>
+            </>
+          )}
+        </div>
+      </div>
+    </div>
+
+    <div className="busqueda-articulos">
+      <div className="titulo">BUSQUEDA DE ARTICULOS <span style={{ cursor: "pointer" }}>✕</span></div>
+      <div className="filtros">
+        <label className="radio"><input type="radio" name="tipoArt" checked={tipoBusquedaArt === "nombre"} onChange={() => setTipoBusquedaArt("nombre")} /><span>Nombre</span></label>
+        <label className="radio"><input type="radio" name="tipoArt" checked={tipoBusquedaArt === "marca"} onChange={() => setTipoBusquedaArt("marca")} /><span>Marca</span></label>
+        <label className="radio"><input type="radio" name="tipoArt" checked={tipoBusquedaArt === "categoria"} onChange={() => setTipoBusquedaArt("categoria")} /><span>Categoria</span></label>
+        <label className="radio"><input type="radio" name="tipoArt" checked={tipoBusquedaArt === "codigo"} onChange={() => setTipoBusquedaArt("codigo")} /><span>Codigo</span></label>
+        <input type="text" className="input-buscar" placeholder="Buscar..." value={textoBusquedaArt} onChange={(e) => setTextoBusquedaArt(e.target.value)} />
+        <button type="button" className="btn-buscar-art"><IconSearchCircle size={14} color="#fff" /> BUSCAR</button>
+        <span style={{ cursor: "pointer", fontSize: "18px" }} title="Actualizar">↻</span>
+      </div>
+    </div>
+
+    <table className="tabla-articulos">
+      <thead>
+        <tr className="headTitle">
+          <td>CODIGO</td>
+          <td>ARTICULOS</td>
+          <td>STOCK</td>
+          <td>P.COMPRA</td>
+          <td>COMENTARIO</td>
+          <td>CANT.</td>
+          <td>AGRE.</td>
+          <td>T.A.IGV</td>
+        </tr>
+      </thead>
+      <tbody>
+        <tr className="empty-row"><td colSpan="8">No hay artículos agregados.</td></tr>
+      </tbody>
+    </table>
+
+    <div className="botones-form">
+      <button type="button" className="btn-guardar"><IconFloppy /> Guardar</button>
+      <button type="button" className="btn-regresar" onClick={() => setShowFormNuevo(false)}><IconArrowLeft /> Regresar</button>
+    </div>
+  </div>
+) : (
+<>
 <div className="t7">
 ORDEN DE COMPRA / detallado
 </div>
@@ -520,10 +843,10 @@ onChange={()=>setTipoBusqueda("ruc")}
 
 <button className="botonBuscar" type="submit">
 <IconSearchCircle />
-Buscar
+BUSCAR
 </button>
 
-<button className="botonNuevo" type="button">
+<button className="botonNuevo" type="button" onClick={() => setShowFormNuevo(true)}>
 <IconPlus />
 Agregar Nuevo
 </button>
@@ -602,8 +925,10 @@ registrosFiltrados.map((r)=>(
     </span>
   </div>
 </div>
-
 </div>
+
+</>
+)}
 
 </div>
 
