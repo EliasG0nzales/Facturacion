@@ -103,6 +103,7 @@ function Navbar() {
                   <Link to="/apertura-caja">Apertura de Caja</Link>
                   <Link to="/mov-caja">Movimiento de Caja</Link>
                   <Link to="/tipo-pago">Tipo de Pago</Link>
+                  <Link to="/Caja">Caja</Link>
                 </div>
               </div>
               <div className="submenu">
