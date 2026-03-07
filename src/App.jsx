@@ -25,7 +25,7 @@ import CmsVista       from './pages/Abm/CMS/WebVista';
 import OrdenCompra    from './pages/Egresos/OrdenCompra';
 import Compra         from './pages/Egresos/Compra';
 import CtaPagar       from './pages/Egresos/CtaPagar';
-import CtaPagarLetras from './pages/Egresos/CtaPagarletras';
+import CtaPagarLetras from './pages/Egresos/CtaPagarLetras';
 import Gastos         from './pages/Egresos/Gastos';
 
 // INGRESOS
@@ -53,6 +53,7 @@ import CxcContable    from './pages/Ingresos/Cxc/CxcContable';
 import AperturaCaja   from './pages/Reportes/Caja/AperturaCaja';
 import MovCaja        from './pages/Reportes/Caja/MovCaja';
 import TipoPago       from './pages/Reportes/Caja/TipoPago';
+import Caja           from './pages/Reportes/Caja/Caja';
 import RepCompraGen   from './pages/Reportes/Compras/General';
 import RepCompraDet   from './pages/Reportes/Compras/Detallado';
 import RepVentaGen    from './pages/Reportes/Venta/General';
@@ -142,6 +143,7 @@ function App() {
           <Route path="/apertura-caja"  element={<Layout><AperturaCaja /></Layout>} />
           <Route path="/mov-caja"       element={<Layout><MovCaja /></Layout>} />
           <Route path="/tipo-pago"      element={<Layout><TipoPago /></Layout>} />
+          <Route path="/Caja"           element={<Layout><Caja /></Layout>} />
           <Route path="/rep-compra-gen" element={<Layout><RepCompraGen /></Layout>} />
           <Route path="/rep-compra-det" element={<Layout><RepCompraDet /></Layout>} />
           <Route path="/rep-venta-gen"  element={<Layout><RepVentaGen /></Layout>} />
