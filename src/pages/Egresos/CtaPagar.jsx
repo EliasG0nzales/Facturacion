@@ -133,10 +133,10 @@ const DatePicker = ({ label, value, onChange }) => {
 const RADIO_OPTS = ['Credito','Cancelado Y','Nro','proveedor','RUC','Usuario'];
 
 const DATOS_INICIALES = [
-  { id:1, doccomp:'F001-00123', proveedor:'Distribuidora Lima SAC',  fecha:'2024-03-10', credito:500.00,  moneda:'US$', deuda:500.00,  fechap:'2024-04-10', estado:'Credito'   },
-  { id:2, doccomp:'F002-00045', proveedor:'Importaciones Norte EIRL',fecha:'2024-03-15', credito:1200.00, moneda:'S/.',  deuda:0.00,   fechap:'2024-04-15', estado:'Cancelado' },
-  { id:3, doccomp:'B001-00321', proveedor:'Comercial Sur SRL',        fecha:'2024-03-20', credito:350.00,  moneda:'S/.',  deuda:175.00, fechap:'2024-04-20', estado:'Parcial'   },
-  { id:4, doccomp:'F001-00198', proveedor:'Proveedor Nacional SA',    fecha:'2024-02-28', credito:800.00,  moneda:'US$', deuda:800.00,  fechap:'2024-03-28', estado:'Vencido'   },
+  { id:1, doccomp:'F001-00123', proveedor:'Distribuidora Lima SAC',  fecha:'2026-03-10', credito:500.00,  moneda:'US$', deuda:500.00,  fechap:'2026-04-10', estado:'Credito'   },
+  { id:2, doccomp:'F002-00045', proveedor:'Importaciones Norte EIRL',fecha:'2026-03-15', credito:1200.00, moneda:'S/.',  deuda:0.00,   fechap:'2026-04-15', estado:'Cancelado' },
+  { id:3, doccomp:'B001-00321', proveedor:'Comercial Sur SRL',        fecha:'2026-03-20', credito:350.00,  moneda:'S/.',  deuda:175.00, fechap:'2026-04-20', estado:'Parcial'   },
+  { id:4, doccomp:'F001-00198', proveedor:'Proveedor Nacional SA',    fecha:'2026-02-28', credito:800.00,  moneda:'US$', deuda:800.00,  fechap:'2026-03-28', estado:'Vencido'   },
 ];
 
 const CtaPagar = () => {
@@ -185,7 +185,7 @@ const CtaPagar = () => {
       <td>${d.moneda} ${d.credito.toFixed(2)}</td><td>${d.moneda}</td>
       <td>${d.moneda} ${d.deuda.toFixed(2)}</td><td>${d.fechap}</td><td>${d.estado}</td></tr>`).join('');
     const win = window.open('','_blank');
-    win.document.write(`<html><head><title>Cta x Pagar</title>
+    win.document.write(`<html><head><title>Cta x Pagar</title> 
       <style>body{font-family:Arial,sans-serif;font-size:12px;}h2{color:#17a2b8;border-bottom:2px solid #17a2b8;padding-bottom:5px;}
       table{border-collapse:collapse;width:100%;}th{background:#17a2b8;color:#fff;padding:7px;text-align:center;}
       td{padding:5px 7px;border-bottom:1px solid #dee2e6;text-align:center;}tr:nth-child(even){background:#f8f9fa;}
