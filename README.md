@@ -54,10 +54,7 @@ git --version
 ### 1. Crear proyecto con Vite
 
 ```bash
-# Crear nuevo proyecto React con Vite
 npm create vite@latest Facturacion -- --template react
-
-# Ingresar a la carpeta del proyecto
 cd Facturacion
 ```
 
@@ -67,29 +64,19 @@ cd Facturacion
 npm install
 ```
 
-### 3. Instalar dependencias adicionales usadas en el proyecto
+### 3. Instalar dependencias adicionales
 
 ```bash
-# React Router para navegación entre páginas
 npm install react-router-dom
-
-# Axios para llamadas a la API
 npm install axios
-
-# SweetAlert2 para alertas y confirmaciones
 npm install sweetalert2
-
-# Recharts para gráficos en reportes
 npm install recharts
-
-# React Icons para íconos en componentes
 npm install react-icons
 ```
 
 ### 4. Crear la estructura de carpetas
 
 ```bash
-# Desde la raíz del proyecto ejecutar en terminal
 mkdir src/pages
 mkdir src/pages/Abm
 mkdir src/pages/Abm/CMS
@@ -123,8 +110,6 @@ Abre el navegador en `http://localhost:5173`
 npm run build
 ```
 
-Los archivos compilados quedan en la carpeta `/dist`
-
 ### 7. Previsualizar build de producción
 
 ```bash
@@ -138,16 +123,9 @@ npm run preview
 Si ya tienes el proyecto clonado desde GitHub:
 
 ```bash
-# Clonar el repositorio
-git clone https://github.com/tu-usuario/Facturacion.git
-
-# Entrar a la carpeta
+git clone https://github.com/EliasG0nzales/Facturacion.git
 cd Facturacion
-
-# Instalar dependencias
 npm install
-
-# Ejecutar en desarrollo
 npm run dev
 ```
 
@@ -267,72 +245,33 @@ El sistema utiliza autenticación mediante usuario y contraseña. El flujo es:
 4. `PrivateRoute.jsx` protege todas las rutas privadas
 5. Si no hay token válido redirige automáticamente al login
 
-**Características del Login:**
-- Formulario con usuario y contraseña
+**Características:**
 - Validación de campos vacíos
 - Manejo de errores de autenticación
 - Redirección automática al Dashboard tras login exitoso
 - Botón de cerrar sesión que limpia el token
 
-**Ejemplo de uso de JavaScript en el Login:**
-
 ```jsx
 // Login.jsx
-import { useState } from "react";
-
-const Login = () => {
-  const [usuario, setUsuario] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError]     = useState("");
-
-  const handleLogin = async () => {
-    if (!usuario || !password) {
-      setError("Complete todos los campos");
-      return;
-    }
-    try {
-      const res = await fetch("/api/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ usuario, password }),
-      });
-      const data = await res.json();
-      if (data.token) {
-        localStorage.setItem("token", data.token);
-        window.location.href = "/dashboard";
-      } else {
-        setError("Credenciales incorrectas");
-      }
-    } catch {
-      setError("Error de conexión");
-    }
-  };
-
-  return (
-    <div>
-      <input value={usuario}  onChange={e => setUsuario(e.target.value)}  placeholder="Usuario"    />
-      <input value={password} onChange={e => setPassword(e.target.value)} placeholder="Contraseña" type="password" />
-      {error && <p style={{ color: "red" }}>{error}</p>}
-      <button onClick={handleLogin}>Ingresar</button>
-    </div>
-  );
+const handleLogin = async () => {
+  if (!usuario || !password) { setError("Complete todos los campos"); return; }
+  const res  = await fetch("/api/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ usuario, password }),
+  });
+  const data = await res.json();
+  if (data.token) { localStorage.setItem("token", data.token); window.location.href = "/dashboard"; }
+  else setError("Credenciales incorrectas");
 };
-
-export default Login;
 ```
-
-**PrivateRoute — Protección de rutas:**
 
 ```jsx
 // PrivateRoute.jsx
-import { Navigate } from "react-router-dom";
-
 const PrivateRoute = ({ children }) => {
   const token = localStorage.getItem("token");
   return token ? children : <Navigate to="/login" />;
 };
-
-export default PrivateRoute;
 ```
 
 ---
@@ -341,15 +280,14 @@ export default PrivateRoute;
 
 ### `Dashboard.jsx`
 
-Pantalla principal que el usuario ve tras iniciar sesión. Muestra un resumen ejecutivo del negocio con:
+Pantalla principal tras iniciar sesión. Muestra:
 
 - **Tarjetas de resumen** — ventas del día, compras pendientes, clientes nuevos, stock bajo
-- **Gráfico de ventas** — evolución mensual usando Recharts
+- **Gráfico de ventas** — evolución mensual con Recharts
 - **Alertas activas** — tareas pendientes y créditos vencidos
 - **Accesos rápidos** — botones directos a los módulos más usados
 
 ```jsx
-// Ejemplo de uso de Recharts en Dashboard
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip } from "recharts";
 
 const datos = [
@@ -361,9 +299,7 @@ const datos = [
 const GraficoVentas = () => (
   <LineChart width={600} height={300} data={datos}>
     <CartesianGrid strokeDasharray="3 3" />
-    <XAxis dataKey="mes" />
-    <YAxis />
-    <Tooltip />
+    <XAxis dataKey="mes" /><YAxis /><Tooltip />
     <Line type="monotone" dataKey="ventas" stroke="#17a2b8" strokeWidth={2} />
   </LineChart>
 );
@@ -373,54 +309,36 @@ const GraficoVentas = () => (
 
 ## 🔷 ABM — Altas, Bajas y Modificaciones
 
-Cada módulo ABM sigue el mismo patrón de desarrollo en React:
-
 ### Patrón estándar de un componente ABM
 
 ```jsx
-import { useState } from "react";
-
 const MiModulo = () => {
-  // 1. Estado de datos
   const [registros, setRegistros] = useState([]);
   const [form, setForm]           = useState({ campo1: "", campo2: "" });
   const [modal, setModal]         = useState(null); // null | 'nuevo' | 'editar'
   const [msg, setMsg]             = useState({ tipo: "", texto: "" });
 
-  // 2. Mostrar mensaje temporal
   const showMsg = (tipo, texto) => {
     setMsg({ tipo, texto });
     setTimeout(() => setMsg({ tipo: "", texto: "" }), 2500);
   };
 
-  // 3. Guardar registro
   const guardar = () => {
     if (!form.campo1) return showMsg("danger", "El campo es obligatorio");
-    if (modal === "nuevo") {
-      setRegistros(prev => [...prev, { ...form, id: Date.now() }]);
-      showMsg("success", "Registro agregado correctamente");
-    } else {
-      setRegistros(prev => prev.map(r => r.id === form.id ? { ...form } : r));
-      showMsg("success", "Registro actualizado correctamente");
-    }
+    if (modal === "nuevo") setRegistros(prev => [...prev, { ...form, id: Date.now() }]);
+    else setRegistros(prev => prev.map(r => r.id === form.id ? { ...form } : r));
+    showMsg("success", "Guardado correctamente");
     setModal(null);
   };
 
-  // 4. Eliminar registro
   const eliminar = (id) => {
-    if (window.confirm("¿Eliminar este registro?")) {
+    if (window.confirm("¿Eliminar este registro?"))
       setRegistros(prev => prev.filter(r => r.id !== id));
-      showMsg("success", "Registro eliminado");
-    }
   };
-
-  return <div>{/* JSX del componente */}</div>;
 };
-
-export default MiModulo;
 ```
 
-### Módulos ABM implementados
+### Módulos ABM implementados ✅
 
 | Componente | Descripción | Campos principales |
 |---|---|---|
@@ -452,58 +370,256 @@ Módulo para administrar el contenido del sitio web público.
 
 ## 🔴 Egresos
 
-Módulo de control de salidas y pagos.
+Módulo de control de salidas y pagos. Accesible desde el menú **Egresos**.
 
-| Componente | Descripción | Campos principales |
-|---|---|---|
-| `OrdenCompra.jsx` | Órdenes de compra | Proveedor, fecha, artículos, cantidades, precios, estado |
-| `Compra.jsx` | Registro de compras | Proveedor, comprobante, fecha, artículos, IGV, total |
-| `CtaPagar.jsx` | Cuentas por pagar | Proveedor, factura, monto, fecha vencimiento, estado |
-| `CtaPagarLetras.jsx` | Letras por pagar | Proveedor, letra, monto, fecha, estado |
-| `Gastos.jsx` | Gastos operativos | Tipo gasto, descripción, monto, fecha, sucursal |
+---
+
+### 🛒 Orden de Compra — `OrdenCompra.jsx`
+
+Gestión de órdenes de compra emitidas a proveedores antes de registrar la compra formal.
+
+- **Vista Lista:** BUSCAR X con filtros por Proveedor/Fecha, tabla Nro/Proveedor/Fecha/Total/Estado, badges Pendiente/Aprobada/Anulada, ícono ✏ por fila, botones 🖨 / 📊 Excel
+- **Vista Nuevo:** selección de Proveedor, Fecha, Moneda, buscador de artículos con cantidad y precio unitario, cálculo automático subtotal/IGV/total, campo Observaciones, botones 💾 Guardar / 🗋 Limpiar / ↩ Regresar
+- **Documento imprimible:** Orden de Compra formal con datos del proveedor, tabla de artículos, totales y campo de firma
+
+---
+
+### 🧾 Compra — `Compra.jsx`
+
+Registro de compras con comprobante SUNAT de proveedores.
+
+- **Vista Lista:** filtros por Proveedor/Tipo Comprobante/Fecha, tabla Proveedor/Tipo/Serie/Nro/Fecha/Base/IGV/Total/Estado, fila Total dinámica, badges, ícono ✏ por fila, botones 🖨 / 📊 / 📄
+- **Vista Nuevo:** Tipo Comprobante (Factura/Boleta/Ticket/Nota/Liquidación), Proveedor (select con RUC), Serie/Nro, Fecha, Moneda, buscador de artículos con IGV 18%, totales automáticos, tipo de pago Contado/Crédito, campo Glosa
+- **Exportación:** CSV con BOM UTF-8 para correcta visualización en Excel
+
+---
+
+### 💳 Cta. x Pagar — `CtaPagar.jsx`
+
+Control de cuentas por pagar a proveedores con seguimiento de vencimientos.
+
+- **Vista Lista:** BUSCAR X con Proveedor + tipo + estado + fechas, tabla Proveedor/Comprobante/Fecha/Vto/Pendiente/Estado, badges Pendiente (naranja) / Pagado (verde) / Vencido (rojo), fila totales S/. y US$.
+- **Modal Pagar:** Fecha pago, Monto, Medio de pago (Efectivo/Transferencia/Cheque/Depósito), Referencia, validación de monto vs saldo, actualización de estado automática
+- **Características:** ordenamiento por columnas (▲▼), alerta flotante verde/roja auto-cierre 3.5s
+
+---
+
+### 📋 Cta. x Pagar - Letras — `CtaPagarLetras.jsx`
+
+Gestión de letras de cambio emitidas como medio de pago a proveedores.
+
+- **Vista Lista:** tabla Proveedor/Letra Nro/Fecha Emisión/Fecha Vencimiento/Monto/Estado, badges Pendiente/Al Cobro/Protestada/Pagada, filtros por proveedor/estado/fecha, ícono ✏ por fila
+- **Modal Editar:** actualización de estado, fecha de pago efectivo, banco y referencia
+- **Totales:** monto total de letras pendientes en S/. y US$.
+
+---
+
+### 💸 Gastos — `Gastos.jsx`
+
+Registro de gastos operativos, administrativos y de mantenimiento.
+
+- **Vista Lista:** BUSCAR X por Tipo de Gasto + texto + Fecha Inicio/Fin, tabla Tipo/Fecha/Detalle/Monto S/./Monto US$./Comprobante/Responsable, fila Total dinámica con suma por moneda, ícono ✏ por fila, botones 🖨 / 📊 / 📄
+- **Vista Nuevo:** Tipo de Gasto (select con categorías), Fecha ✅ verde, Detalle, Monto S/., Monto US$., Tipo Comprobante, Serie/Nro, Responsable, Observaciones
 
 ---
 
 ## 🟢 Ingresos
 
-### CRM
+Módulo principal del sistema. Accesible desde el menú **Ingreso**.
 
-| Componente | Descripción |
-|---|---|
-| `Tareas.jsx` | Gestión de tareas y seguimiento comercial con prioridades y estados |
-| `Calendario.jsx` | Vista de calendario con eventos y tareas programadas por fecha |
-| `Encuesta.jsx` | Creación y gestión de encuestas enviadas a clientes |
+---
 
-### Cuentas por Cobrar
+### 📌 CRM — Gestión de Relaciones con Clientes
 
-| Componente | Descripción |
-|---|---|
-| `CtaxCobrar.jsx` | Listado general de todas las cuentas por cobrar activas |
-| `CxcCobranza.jsx` | Proceso de cobranza con seguimiento de pagos parciales |
-| `CxcContable.jsx` | Vista contable de cuentas con asientos y movimientos |
-| `CxcLetras.jsx` | Letras de cambio emitidas pendientes de cobro |
-| `CxcPendiente.jsx` | Cuentas vencidas y próximas a vencer |
-| `CxcTotal.jsx` | Resumen totalizado por cliente y período |
+Accesible desde **Ingreso › CRM**.
 
-### Venta
+#### 📅 Tareas — `Tareas.jsx`
 
-| Componente | Descripción |
-|---|---|
-| `Venta.jsx` | Registro de ventas con comprobante, cliente, artículos e IGV |
-| `ConfirmarPago.jsx` | Confirmación de pagos de ventas a crédito |
-| `NotadeCredito.jsx` | Emisión de notas de crédito por devoluciones o descuentos |
-| `NotadeDebito.jsx` | Emisión de notas de débito por cargos adicionales |
-| `OtrosIngresos.jsx` | Ingresos no relacionados a ventas como alquileres o servicios |
-| `CreditoAcumulado.jsx` | Control del crédito acumulado y disponible por cliente |
+Gestión de tareas y actividades comerciales del equipo de ventas.
 
-### Otros Ingresos
+- **Vista Lista:** tabla Asignado/Título/Prioridad/Estado/Fecha Límite/Responsable, badges Prioridad (Alta=rojo/Media=naranja/Baja=verde) y Estado (Pendiente=gris/En Proceso=azul/Completada=verde), filtros por estado/prioridad/responsable/fecha, ícono ✏ por fila
+- **Vista Nuevo:** Título, Descripción, Prioridad, Estado, Fecha Límite ✅ verde, Responsable (select usuarios), Observaciones
 
-| Componente | Descripción |
-|---|---|
-| `Cotizacion.jsx` | Generación de cotizaciones formales para clientes |
-| `PedidoWeb.jsx` | Gestión de pedidos recibidos desde el sitio web |
-| `GuiaRemision.jsx` | Emisión de guías de remisión para traslado de mercadería |
-| `AlmacenTraslado.jsx` | Traslado de artículos entre sucursales con control de stock |
+#### 🗓️ Calendario — `Calendario.jsx`
+
+Vista de calendario mensual con eventos y actividades programadas.
+
+- **Vista Calendario:** navegación por mes con botones ◀ ▶, grid 7 columnas días, celdas con eventos en badges de colores, clic en día para agregar/ver eventos
+- **Tipos de evento:** Reunión (azul), Vencimiento (rojo), Tarea (verde), Recordatorio (naranja)
+- **Modal Evento:** Título, Fecha, Hora, Tipo, Descripción, Guardar / Eliminar
+
+#### 📊 Encuesta — `Encuesta.jsx`
+
+Creación y gestión de encuestas de satisfacción enviadas a clientes.
+
+- **Vista Lista:** tabla Título/Fecha/Estado/Respuestas/Preguntas, badges Estado (Activa=verde/Cerrada=gris), ícono ✏ editar, ícono 📋 ver resultados
+- **Vista Nuevo:** Título, Descripción, Fecha Inicio/Fin, Estado, sección dinámica de Preguntas (Texto/Opción múltiple/Sí-No), agregar/quitar pregunta
+
+---
+
+### 🛍️ Pedido Web — `PedidoWeb.jsx`
+
+Accesible desde **Ingreso › Pedido web**.
+
+Gestión de pedidos recibidos desde el sitio web de la empresa.
+
+- **Vista Lista:** BUSCAR X con Estado + texto + Fecha Inicio/Fin, tabla Nro Pedido/Fecha/Cliente/Email/Teléfono/Total/Estado, badges Nuevo=azul/Procesando=naranja/Enviado=verde/Cancelado=rojo, ícono ✏ por fila
+- **Modal Detalle:** datos del cliente, dirección de envío, tabla de artículos pedidos con cantidad y precio, historial de cambios de estado, campo Observaciones internas
+- **Acciones:** cambiar estado, generar Venta desde pedido (botón → Venta), imprimir orden
+
+---
+
+### 📄 Cotización — `Cotizacion.jsx`
+
+Accesible desde **Ingreso › Cotizacion**.
+
+Generación de cotizaciones formales para clientes con posibilidad de convertirlas en venta.
+
+- **Vista Lista:** BUSCAR X por Cliente/Vendedor/Estado + fechas, tabla Nro/Fecha/Cliente/Vendedor/Total/Validez/Estado, badges Vigente=verde/Vencida=rojo/Convertida=azul, ícono ✏ por fila, botón → Venta para convertir
+- **Vista Nuevo:** Cliente (select RUC), Vendedor, Fecha ✅ verde, Validez días, Moneda, Condición pago, buscador artículos con precio editable, subtotal/IGV 18%/total automáticos, Observaciones/Condiciones
+- **Documento imprimible:** Cotización formal con logo empresa, datos del cliente, tabla de artículos, validez, condiciones y campo de firma
+
+---
+
+### 💰 Venta
+
+Sub-módulo de ventas. Accesible desde **Ingreso › Venta**.
+
+#### 🧾 Venta — `Venta.jsx`
+
+Registro principal de ventas con generación de comprobantes electrónicos SUNAT.
+
+- **Vista Lista:** BUSCAR X por Sucursal/Tipo/Cliente/Vendedor + fechas, tabla Sucursal/Tipo/Serie/Nro/Fecha/Cliente/Vendedor/Base/IGV/Total/Estado, badges SUNAT y Estado, fila Total dinámica, 5 íconos por fila, botones 🖨 / 📊 / 📄
+- **Vista Nuevo:** Tipo Comprobante (Factura/Boleta/Ticket), Cliente (select + búsqueda RUC/nombre), Vendedor, Fecha ✅ verde, Moneda, Tipo pago Contado/Crédito+días, buscador artículos con stock, IGV 18% automático
+- **Documentos generados:** Factura/Boleta electrónica imprimible, Ticket 80mm formato térmica
+
+#### ✅ Confirmar Pago — `ConfirmarPago.jsx`
+
+Accesible desde **Ingreso › Venta › Confirmar Pago Venta**.
+
+Confirmación y registro de pagos de ventas realizadas a crédito.
+
+- **Vista Lista:** tabla Venta Nro/Fecha/Cliente/Total/Pagado/Saldo/Estado, badges Pendiente (naranja) / Pagado (verde) / Parcial (azul), filtros por cliente/estado/fecha, fila Totales
+- **Modal Confirmar Pago:** Fecha pago ✅ verde, Monto, Método (Efectivo/Transferencia/Cheque/Depósito/Tarjeta), Banco, Referencia, validación automática, actualización de estado al completar
+
+#### 📈 Nota de Débito — `NotaDebito.jsx`
+
+Accesible desde **Ingreso › Venta › Nota de Debito**.
+
+Emisión de notas de débito electrónicas según normativa SUNAT.
+
+- **Vista Lista:** tabla Guía Nro/Fecha/Comprobante Ref./Cliente/Motivo/Monto/Estado, badges SUNAT y Estado, íconos ✏ / 🖨 / `</>` XML / 📖 Portal SUNAT
+- **Vista Nuevo:** referencia a comprobante original, Cliente, Fecha ✅ verde, **8 motivos SUNAT:** Mora / Aumento de valor / Penalidades / Gastos incurridos por el comprador / Diferencia de cambio / Otros conceptos / Cargos por garantía / Gastos de cobranza, Monto, IGV, Total
+- **Documentos:** Nota de Débito imprimible + XML DespatchAdvice SUNAT descargable
+
+#### 📉 Nota de Crédito — `NotaCredito.jsx`
+
+Accesible desde **Ingreso › Venta › Nota de Credito**.
+
+Emisión de notas de crédito electrónicas según normativa SUNAT.
+
+- **Vista Lista:** tabla Nro/Fecha/Comprobante Ref./Cliente/Motivo/Monto/Estado, íconos ✏ / 🖨 / `</>` XML / 📖 Portal SUNAT
+- **Vista Nuevo:** referencia a comprobante original, Cliente, Fecha ✅ verde, **8 motivos SUNAT:** Anulación de la operación / Error en el RUC / Anulación error en descripción / Anulación error en IGV / Devolución / Descuentos / Bonificación / Disminución en el valor, Monto, IGV, Total
+- **Documentos:** Nota de Crédito imprimible + XML SUNAT descargable
+
+#### 💵 Otros Ingresos — `OtrosIngresos.jsx`
+
+Accesible desde **Ingreso › Venta › Otros Ingresos**.
+
+Registro de ingresos no relacionados a ventas de artículos.
+
+- **Vista Lista:** BUSCAR X con DE/Motivo/Fecha, tabla Fecha/A/Detalle/Tipo/Moneda/Monto S/./Monto US$., fila Total por moneda, ícono ✏ por fila, botones 🖨 / 📊 / 📄
+- **Vista Nuevo:** formulario en fila horizontal — Fecha ✅ verde, A (destinatario), Detalle, Tipo (General/Adelanto/Depósito/Préstamo/Alquiler/Otros), Moneda (S/./US$.), Monto
+- **Totales:** suma dinámica en ambas monedas al pie de tabla
+
+#### 🏅 Crédito Acumulado — `CreditoAcumulado.jsx`
+
+Accesible desde **Ingreso › Venta › Credito acumulado**.
+
+Control del crédito acumulado por cliente con 10 acciones por comprobante.
+
+- **Vista Lista:** BUSCAR X por Sucursal/Tipo/Cliente/Vendedor + fechas, tabla Sucursal/Tipo/Serie/Nro/Fecha/Cliente/Vendedor/Base/IGV/Total, badges SUNAT (Pendiente/Enviado/Aceptado) y Estado (Vigente/Anulado), fila Total dinámica
+- **10 íconos de acción por fila:**
+  - ✏ Editar / Eliminar comprobante
+  - **ND** Generar Nota de Débito desde este comprobante
+  - **NC** Generar Nota de Crédito desde este comprobante
+  - 🖨 Ticket 80mm formato térmica
+  - ↺ Convertir en nueva Cotización
+  - 👤 Ficha completa del cliente
+  - **VTA** Generar nueva Venta para el mismo cliente
+  - 📄 PDF Factura Electrónica imprimible
+  - `</>` XML SUNAT DespatchAdvice descargable
+  - 📖 Consultar en Portal SUNAT
+
+---
+
+### 🏦 Cta. x Cobrar
+
+> ⚠️ **En integración** — Este sub-módulo está siendo desarrollado por otro miembro del equipo.
+
+Accesible desde **Ingreso › Cta. x Cobrar**.
+
+| Componente | Descripción | Estado |
+|---|---|---|
+| `CtaxCobrar.jsx` | Listado general de cuentas por cobrar activas con saldos | 🔧 En desarrollo |
+| `CxcLetras.jsx` | Letras de cambio emitidas pendientes de cobro | 🔧 En desarrollo |
+| `CxcPendiente.jsx` | Cuentas vencidas y próximas a vencer con alertas | 🔧 En desarrollo |
+| `CxcTotal.jsx` | Resumen totalizado por cliente y período | 🔧 En desarrollo |
+| `CxcCobranza.jsx` | Proceso de cobranza con seguimiento de pagos parciales | 🔧 En desarrollo |
+| `CxcContable.jsx` | Vista contable con asientos y movimientos por cobrar | 🔧 En desarrollo |
+
+---
+
+### 🚚 Guía de Remisión — `GuiaRemision.jsx`
+
+Accesible desde **Ingreso › Guia Remision**.
+
+Emisión y control de guías de remisión electrónicas para traslado de mercadería según normativa SUNAT.
+
+- **Vista Lista:** BUSCAR X por Sucursal/Guía Nro/Cliente + fechas, tabla Sucursal/Guia Nro/Fecha/Doc.Venta/Tip.Traslado/Cliente/Estado/SUNAT, badges Estado (Vigente/Anulada) y SUNAT (Pendiente/Enviada/Aceptada), ordenamiento por columnas (▲▼), 5 íconos por fila, botones 🖨 / 📊 / 📄
+- **5 íconos por fila:** ✏ Editar/Eliminar · 📦 Guía imprimible · 🖨 Ticket 80mm · `</>` XML SUNAT · 📖 Portal SUNAT
+- **Vista Detalle:** tabla extendida con 14 columnas incluyendo datos de entrega, traslado, transportista y artículos, exportación CSV con BOM UTF-8
+- **Vista Nuevo — Formulario completo:**
+  - **Documento de Salida:** Nro Guía (select GR Electrónica TI01 + campo numérico), Fecha Entrega ✅ verde, Fecha Traslado ✅ verde, Documento (Factura/Boleta), Serie, Nro
+  - **Domicilio de Partida:** Dirección (fondo verde readonly), Departamento (25 departamentos del Perú), Provincia, Distrito
+  - **Domicilio de Llegada:** Dirección, Departamento, Provincia, Distrito
+  - **Datos comerciales:** Cliente (select), Vendedor, Trasbordo (Sí/No)
+  - **Información de Transporte:** Modo Traslado (Público/Privado), Vehículo/Placa, Certificado, Licencia, Nombre o Empresa Conductor, DNI/RUC, Costo Mínimo
+  - **Información Adicional:** Orden, Atención, Condiciones, A Días, Tipo Traslado, Puerto
+  - **Búsqueda de artículos:** `BuscadorArticulos` (componente externo) con radios Nombre/Marca/Línea/Cat./Código/C.Barra, buscador fondo verde, tabla Código/Artículo/Stock/Med./P-M/C/P.Venta/Cant./T.A.IGV/✔, artículos agregados con botón ✕ quitar
+
+**Documentos generados:**
+- 📦 **Guía de Remisión** — documento completo con datos del remitente, domicilios, transportista, placa, tabla de artículos y 3 campos de firma
+- 🖨 **Ticket 80mm** — versión compacta para impresora térmica
+- `</>` **XML SUNAT** — formato DespatchAdvice descargable como `.xml`
+- 📖 **Portal SUNAT** — visualización con hash de verificación simulado
+
+---
+
+### 🏪 Almacén: Traslado de Artículos — `AlmacenTraslado.jsx`
+
+Accesible desde **Ingreso › Almacen : Traslado articulo**.
+
+Módulo para trasladar artículos entre sucursales con generación de guía de remisión interna.
+
+- **Vista Lista:** título "Almacén: traslado de artículos" con ícono ℹ azul
+  - **BUSCAR X:** filtro Origen/Destino + select Sucursal (Todos / Tienda 1b 133 / Tienda 1A 119 / Almacen 2B 167) + y/o tipo (Artículo/Marca/Categoría/Código/C.Barra/Nro Guía) + input búsqueda + Fecha Inicio/Fin + botón 🔍 Buscar + botón **+1** (azul)
+  - **Tabla:** columnas GUIA / FECHA ENT. / FECHA TRA. / RES. / DE / A / ARTÍCULO / CANTIDAD / opciones
+  - **Fila Total** dinámica al pie con suma de cantidades
+  - Ícono ✏ por fila → modal Actualizar / Eliminar
+  - Botones: 🖨 Imprimir / 📊 Excel / 📄 PDF
+
+- **Vista Nuevo (botón +1) — TRASLADO ENTRE ALMACEN : CON GUIA DE REMISION:**
+  - **Documento de salida:** Nro Guía (select GR TI01 + campo), Fecha Entrega ✅ verde, Fecha Traslado ✅ verde
+  - **Origen (de):** panel fondo gris con label "Tienda 1b 133" en azul, Dirección y Distrito en fondo verde readonly precargado
+  - **Destino (a):** select con sucursales destino disponibles
+  - **Vehículo:** Placa, Certificado, Licencia (panel izquierdo)
+  - **Transportista / Costo:** Nombre, RUC, Costo Mínimo (panel derecho)
+  - **Búsqueda de artículos:** radios Nombre/Marca/Linea/Cat./Código/C.Barra/Serie + buscador fondo verde + tabla Código/Artículo/Stock/Med./Cant./✔
+  - **Artículos agregados:** tabla con seleccionados + botón ✕ quitar por fila
+  - **Botones:** 💾 Guardar / 🗋 Limpiar / ↩ Regresar
+
+**Sucursales disponibles:** Tienda 1b 133 · Tienda 1A 119 · Almacen 2B 167
 
 ---
 
@@ -516,71 +632,166 @@ Módulo de control de salidas y pagos.
 | **Compras** | General, Detallado | Reporte general y detallado de todas las compras |
 | **Ventas** | General, Detallado, Grafico, Estadistica | Análisis de ventas con gráficos y estadísticas |
 | **Contable** | Compra, Venta | Reportes contables de compras y ventas con IGV |
-| **Otros** | Kardex, MovBancarios, Asistencia, Dashboard | Kardex de artículos, movimientos bancarios y asistencia de personal |
+| **Otros** | Kardex, MovBancarios, Asistencia, Dashboard | Kardex de artículos, movimientos bancarios y asistencia |
 
 ---
 
 ## ✅ Funcionalidades Transversales
 
-Todos los módulos ABM comparten estas funcionalidades implementadas en JavaScript puro dentro de React:
+Todos los módulos comparten estas implementaciones en JavaScript/React:
 
-### Búsqueda y filtros
+### DatePicker personalizado con ícono de calendario SVG
 
 ```jsx
-const registrosFiltrados = registros.filter(r => {
-  if (filtro && r.campo !== filtro) return false;
-  if (!busqueda) return true;
-  return r.nombre.toLowerCase().includes(busqueda.toLowerCase());
-});
+const IcoCal = () => (
+  <svg width="18" height="18" viewBox="0 0 36 36" fill="none">
+    <rect x="1" y="4" width="34" height="30" rx="3" fill="#fff" stroke="#bbb" strokeWidth="1.5"/>
+    <rect x="1" y="4" width="34" height="9" rx="3" fill="#e74c3c"/>
+    <rect x="1" y="9" width="34" height="4" fill="#e74c3c"/>
+    <rect x="10" y="1" width="3" height="7" rx="1.5" fill="#888"/>
+    <rect x="23" y="1" width="3" height="7" rx="1.5" fill="#888"/>
+  </svg>
+);
+
+// Fondo verde = fecha requerida | Fondo blanco = fecha opcional
+const DP = ({ value, onChange, verde }) => {
+  const ref = useRef();
+  return (
+    <div style={{ border: verde ? "2px solid #28a745" : "1px solid #ced4da",
+      background: verde ? "#ccff99" : "#fff", borderRadius: 4,
+      padding: "4px 8px", display: "inline-flex", alignItems: "center", gap: 4 }}
+      onClick={() => ref.current.showPicker?.() ?? ref.current.click()}>
+      <span>{value ? value.split("-").reverse().join("/") : ""}</span>
+      <IcoCal />
+      <input ref={ref} type="date" value={value} onChange={e => onChange(e.target.value)}
+        style={{ opacity: 0, width: 1, height: 1, position: "absolute" }} />
+    </div>
+  );
+};
 ```
 
-### Exportar a Excel (CSV)
+### Alerta flotante con auto-cierre
 
 ```jsx
-const exportarExcel = () => {
-  const encabezados = ["Nro", "Nombre", "RUC", "Teléfono"];
-  const filas = datos.map((d, i) => [i + 1, d.nombre, d.ruc, d.telefono].join(","));
-  const csv  = [encabezados.join(","), ...filas].join("\n");
+const showAlert = (msg) => {
+  setAlert(msg);
+  setTimeout(() => setAlert(""), 3500);
+};
+
+// JSX — alerta top-right, color según prefijo "ok:" o "err:"
+{alert && (
+  <div style={{ position:"fixed", top:70, right:20, zIndex:9999,
+    background: alert.startsWith("ok:") ? "#28a745" : "#dc3545",
+    color:"#fff", padding:"10px 18px", borderRadius:6 }}>
+    {alert.startsWith("ok:") ? "✅ " : "⚠️ "}{alert.slice(3)}
+  </div>
+)}
+```
+
+### Documento imprimible en ventana nueva
+
+```jsx
+const abrirVentana = (html) => {
+  const w = window.open("", "_blank", "width=900,height=700,scrollbars=yes");
+  w.document.write(html);
+  w.document.close();
+};
+
+const htmlDoc = (titulo, colorHead, contenido) => `
+  <!DOCTYPE html><html>
+  <head>
+    <meta charset="UTF-8"><title>${titulo}</title>
+    <style>
+      body { font-family: Arial, sans-serif; font-size: 13px; margin: 20px; }
+      .head { background: ${colorHead}; color: #fff; padding: 12px 18px; }
+      table { width: 100%; border-collapse: collapse; }
+      th, td { border: 1px solid #dee2e6; padding: 6px 10px; }
+      @media print { .no-print { display: none !important; } }
+    </style>
+  </head>
+  <body>${contenido}</body></html>`;
+```
+
+### Descarga de XML SUNAT
+
+```jsx
+const descargarXML = (g) => {
+  const xml  = `<?xml version="1.0" encoding="UTF-8"?>
+<DespatchAdvice xmlns="urn:oasis:names:specification:ubl:schema:xsd:DespatchAdvice-2">
+  <ID>${g.guia}</ID>
+  <IssueDate>${g.fecha}</IssueDate>
+  <Shipment>
+    <TransportMeans>
+      <RoadTransport><LicensePlateID>${g.placa}</LicensePlateID></RoadTransport>
+    </TransportMeans>
+  </Shipment>
+</DespatchAdvice>`;
+  const blob = new Blob([xml], { type: "application/xml" });
+  const a    = document.createElement("a");
+  a.href     = URL.createObjectURL(blob);
+  a.download = `${g.guia}.xml`;
+  a.click();
+  URL.revokeObjectURL(a.href);
+};
+```
+
+### Exportar a Excel — CSV con BOM UTF-8
+
+```jsx
+const exportarExcel = (datos, nombre) => {
+  const cab  = ["Nro", "Fecha", "Cliente", "Total"].join(",");
+  const fils = datos.map((d, i) => [i+1, d.fecha, d.cliente, d.total].join(","));
+  const csv  = [cab, ...fils].join("\n");
   const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
   const a    = document.createElement("a");
   a.href     = URL.createObjectURL(blob);
-  a.download = "reporte.csv";
+  a.download = `${nombre}.csv`;
   a.click();
 };
 ```
 
-### Exportar a Word
+### Búsqueda y filtros en tiempo real
 
 ```jsx
-const exportarWord = () => {
-  const html = `<html><body><table>...</table></body></html>`;
-  const blob = new Blob([html], { type: "application/msword" });
-  const a    = document.createElement("a");
-  a.href     = URL.createObjectURL(blob);
-  a.download = "reporte.doc";
-  a.click();
-};
+const filtrados = registros.filter(r => {
+  if (filtroTipo && r.tipo !== filtroTipo) return false;
+  if (!busqueda) return true;
+  return r.nombre.toLowerCase().includes(busqueda.toLowerCase())
+      || r.ruc?.includes(busqueda);
+});
 ```
 
-### Imprimir
+### Componentes con hooks — regla clave
 
 ```jsx
-const imprimir = () => {
-  const win = window.open("", "_blank");
-  win.document.write(`<html><head><title>Reporte</title></head>
-    <body><table>...</table></body></html>`);
-  win.document.close();
-  win.print();
-};
+// CORRECTO — componente con hooks declarado FUERA del export default
+function BuscadorArticulos({ onAgregar }) {
+  const [tipo, setTipo]   = useState("Nombre");
+  const [query, setQuery] = useState("");
+  // ...
+}
+
+// INCORRECTO — nunca declarar componentes con hooks DENTRO de otro componente
+export default function MiModulo() {
+  function BuscadorArticulos() { const [x, setX] = useState(); } // ERROR de React
+}
 ```
 
-### Mensaje de éxito/error con auto-cierre
+### Modales — renderModal en lugar de IIFE
 
 ```jsx
-const showMsg = (tipo, texto) => {
-  setMsg({ tipo, texto });
-  setTimeout(() => setMsg({ tipo: "", texto: "" }), 2500);
+// CORRECTO — función renderModal separada
+const renderModal = () => {
+  if (!modal) return null;
+  return (
+    <div style={{ position:"fixed", inset:0, background:"rgba(0,0,0,.45)", zIndex:1000 }}>
+      {/* contenido del modal */}
+    </div>
+  );
 };
+
+// INCORRECTO — nunca usar IIFE dentro del JSX
+return <div>{(() => { return <Modal /> })()}</div>; // Causa errores de compilación
 ```
 
 ---
@@ -592,78 +803,44 @@ const showMsg = (tipo, texto) => {
 ```jsx
 import { useState, useEffect, useRef } from "react";
 
-// useState — manejo de estado local
-const [datos, setDatos] = useState([]);
+const [datos, setDatos] = useState([]);   // estado local
+const inputRef          = useRef(null);   // referencia DOM
 
-// useEffect — cargar datos al montar el componente
-useEffect(() => {
-  fetch("/api/clientes")
-    .then(res => res.json())
-    .then(data => setDatos(data));
+useEffect(() => {                          // efecto al montar
+  fetch("/api/datos").then(r => r.json()).then(setDatos);
 }, []);
-
-// useRef — referencia directa a elementos del DOM
-const inputRef = useRef(null);
-inputRef.current.focus();
 ```
 
-### Llamadas a la API con fetch
+### Llamadas a la API
 
 ```jsx
-// GET — obtener datos
-const cargarDatos = async () => {
-  const res  = await fetch("/api/clientes", {
-    headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-  });
-  const data = await res.json();
-  setClientes(data);
-};
+// GET
+const res  = await fetch("/api/clientes", {
+  headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
+});
+const data = await res.json();
 
-// POST — crear registro
-const crear = async (nuevoCliente) => {
-  await fetch("/api/clientes", {
-    method:  "POST",
-    headers: { "Content-Type": "application/json" },
-    body:    JSON.stringify(nuevoCliente),
-  });
-};
-
-// PUT — actualizar registro
-const actualizar = async (id, datos) => {
-  await fetch(`/api/clientes/${id}`, {
-    method:  "PUT",
-    headers: { "Content-Type": "application/json" },
-    body:    JSON.stringify(datos),
-  });
-};
-
-// DELETE — eliminar registro
-const eliminar = async (id) => {
-  await fetch(`/api/clientes/${id}`, { method: "DELETE" });
-};
+// POST / PUT / DELETE
+await fetch(`/api/clientes/${id}`, {
+  method:  "PUT",
+  headers: { "Content-Type": "application/json" },
+  body:    JSON.stringify(datosActualizados),
+});
 ```
 
-### Navegación entre páginas con React Router
+### Navegación con React Router
 
 ```jsx
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import PrivateRoute from "./components/PrivateRoute";
-import Login        from "./pages/Login";
-import Dashboard    from "./pages/Reportes/Dashboard";
-import Cliente      from "./pages/Abm/Cliente";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/" element={<Navigate to="/dashboard" />} />
-        <Route path="/dashboard" element={
-          <PrivateRoute><Dashboard /></PrivateRoute>
-        } />
-        <Route path="/clientes" element={
-          <PrivateRoute><Cliente /></PrivateRoute>
-        } />
+        <Route path="/login"     element={<Login />} />
+        <Route path="/"          element={<Navigate to="/dashboard" />} />
+        <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
+        <Route path="/venta"     element={<PrivateRoute><Venta /></PrivateRoute>} />
       </Routes>
     </BrowserRouter>
   );
@@ -675,17 +852,10 @@ function App() {
 ## 🧰 Scripts Disponibles
 
 ```bash
-# Desarrollo con recarga automática
-npm run dev
-
-# Compilar para producción
-npm run build
-
-# Previsualizar producción local
-npm run preview
-
-# Verificar errores de código con ESLint
-npm run lint
+npm run dev      # Desarrollo con recarga automática → http://localhost:5173
+npm run build    # Compilar para producción → /dist
+npm run preview  # Previsualizar build de producción
+npm run lint     # Verificar errores con ESLint
 ```
 
 ---
@@ -693,20 +863,11 @@ npm run lint
 ## 🌿 Flujo de trabajo con Git
 
 ```bash
-# Ver estado de cambios
-git status
-
-# Agregar todos los cambios
-git add .
-
-# Hacer commit con mensaje descriptivo
-git commit -m "feat: descripción del cambio"
-
-# Subir a GitHub
-git push origin main
-
-# Bajar cambios del repositorio remoto
-git pull origin main
+git status                           # Ver cambios pendientes
+git add .                            # Agregar todos los cambios
+git commit -m "feat: descripción"    # Commit con mensaje descriptivo
+git pull origin main --rebase        # Bajar cambios remotos (evita conflictos de merge)
+git push origin main                 # Subir al repositorio
 ```
 
 ### Tipos de commit recomendados
