@@ -164,9 +164,9 @@ const css = `
   table.tart tbody tr{border-bottom:1px solid #dee2e6;}
   table.tart tbody td{padding:7px 6px;vertical-align:middle;}
   table.tart input[type=text],table.tart input[type=number],table.tart textarea{
-    padding:5px 7px;border:1px solid #ced4da;border-radius:3px;font-size:12px;width:100%;background:#fff;}
-  table.tart textarea{resize:none;height:52px;}
-  table.tart select{padding:5px 5px;border:1px solid #ced4da;border-radius:3px;font-size:12px;width:100%;}
+    padding:5px 7px;border:1px solid #ced4da;border-radius:3px;font-size:12px;width:100%;background:#fff !important;color:#212529 !important;}
+  table.tart textarea{resize:none;height:52px;color:#212529 !important;}
+  table.tart select{padding:5px 5px;border:1px solid #ced4da;border-radius:3px;font-size:12px;width:100%;background:#fff !important;color:#212529 !important;}
   .chk-agregar{width:22px;height:22px;accent-color:#17a2b8;cursor:pointer;}
   .chk-sel{width:18px;height:18px;accent-color:#17a2b8;cursor:pointer;}
 
@@ -854,7 +854,7 @@ export default function Venta() {
                 <tr key={row.id}>
                   <td><input type="text" value={row.codigo} onChange={e=>updRow(row.id,'codigo',e.target.value)}/></td>
                   <td><textarea value={row.articulo} onChange={e=>updRow(row.id,'articulo',e.target.value)} placeholder="Articulo/descripcion"/></td>
-                  <td align="center"><input type="text" value={row.stock} onChange={e=>updRow(row.id,'stock',e.target.value)} readOnly style={{background:'#f8f9fa'}}/></td>
+                  <td align="center"><input type="text" value={row.stock} onChange={e=>updRow(row.id,'stock',e.target.value)} style={{background:'#f8f9fa',color:'#212529'}}/></td>
                   <td>
                     <select value={row.med} onChange={e=>updRow(row.id,'med',e.target.value)}>
                       {MED_OPTS.map(m=><option key={m}>{m}</option>)}
