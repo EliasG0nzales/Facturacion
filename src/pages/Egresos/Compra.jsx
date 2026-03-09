@@ -279,11 +279,17 @@ export default function Compra() {
     input: {
       padding: "6px",
       border: "1px solid #ccc",
-      borderRadius: "4px"
+      borderRadius: "4px",
+      backgroundColor: "#fffff",
+      color: "#212529",
     },
 
     select: {
-      padding: "6px"
+      padding: "6px",
+      backgroundColor: "#fff",
+      color: "#212529",
+      border: "1px solid #ccc",
+      borderRadius: "4px"
     },
 
     botonBuscar: {
