@@ -1,68 +1,94 @@
 import React, { useState, useRef } from 'react';
 
 const styles = `
-  .page-container { padding:20px; font-family:Arial,Helvetica,sans-serif; font-size:13px; }
+  .page-container { padding:10px 14px; font-family:Arial,Helvetica,sans-serif; font-size:13px; background:#fff; }
   .page-container * { color:#212529; box-sizing:border-box; }
-  .page-title { font-size:16px; font-weight:bold; margin-bottom:14px; display:flex; align-items:center; gap:8px; }
+  .page-title { font-size:16px; font-weight:bold; margin-bottom:10px; border-bottom:2px solid #00A3E1; padding-bottom:4px; color:#333; }
+  .page-title .info-dot { background:#00A3E1; color:#fff !important; border-radius:50%; width:18px; height:18px; text-align:center; line-height:18px; font-size:11px; display:inline-block; vertical-align:middle; margin-right:6px; }
 
-  .filtro-wrap { margin-bottom:18px; }
-  .filtro-row1 { display:flex; align-items:center; gap:6px; flex-wrap:wrap; margin-bottom:6px; }
-  .filtro-row2 { display:flex; align-items:flex-end; gap:10px; flex-wrap:wrap; }
-  .filtro-label { font-weight:bold; font-size:13px; white-space:nowrap; }
-  .radio-group { display:flex; align-items:center; gap:14px; flex-wrap:wrap; }
-  .radio-group label { display:flex; align-items:center; gap:4px; cursor:pointer; font-size:13px; white-space:nowrap; }
-  .radio-group input[type="radio"] { cursor:pointer; accent-color:#17a2b8; }
+  .filtros { margin-bottom:10px; }
+  .buscar-radios { margin-bottom:6px; }
+  .buscar-radios .fila-radios { margin-bottom:4px; }
+  .buscar-radios .fila-radios .label-buscar-x { font-weight:bold; font-size:13px; margin-right:6px; }
+  .buscar-radios .fila-radios .radio-letras { margin-right:2px; margin-left:1px; }
+  .buscar-radios .fila-radios > span { display:inline; }
+  .buscar-radios .fila-input-yo { margin-top:4px; }
+  .buscar-radios .fila-input-yo .input-buscar-x { width:90%; max-width:400px; padding:4px 8px; border:1px solid #ced4da; border-radius:4px; font-size:13px; color:#212529; background:#fff; margin-right:6px; }
+  .buscar-radios .fila-input-yo b { font-size:13px; }
+  .buscar-radios .label-buscar-x { font-weight:bold; font-size:13px; white-space:nowrap; color:#212529; display:inline-block; margin-right:8px; vertical-align:middle; }
+  .buscar-radios .input-buscar-x { width:200px; padding:6px 10px; border:1px solid #ced4da; border-radius:4px; font-size:13px; color:#212529; background:#fff; display:inline-block; margin-right:12px; vertical-align:middle; }
+  .buscar-radios .input-buscar-x::placeholder { color:#adb5bd; }
+  .buscar-radios .radio-group { display:inline-block; vertical-align:middle; }
+  .buscar-radios .radio-group label { cursor:pointer; font-size:13px; white-space:nowrap; display:inline-block; margin-right:14px; vertical-align:middle; }
+  .buscar-radios .radio-group label.radio-letras { position:relative; }
+  .buscar-radios .radio-group label.radio-letras input[type="radio"] { position:absolute; opacity:0; pointer-events:none; }
+  .buscar-radios .radio-group label.radio-letras span { display:inline-block; }
+  .buscar-radios .radio-group label.radio-letras span::before { content:""; width:10px; height:10px; border-radius:50%; border:1px solid #6c757d; background:#6c757d; visibility:hidden; display:inline-block; vertical-align:middle; margin-right:4px; }
+  .buscar-radios .radio-group label.radio-letras input[type="radio"]:checked + span::before { visibility:visible; }
 
-  .filtro-texto-wrap { display:flex; align-items:center; gap:6px; flex:1; min-width:200px; }
-  .filtro-texto-wrap input[type="text"] { flex:1; padding:6px 10px; border:1px solid #ced4da; border-radius:4px; font-size:13px; color:#212529; background:#fff; }
-  .filtro-texto-wrap input::placeholder { color:#adb5bd; }
-  .yo-label { font-weight:bold; font-size:13px; }
+  .fechas { display:flex; align-items:flex-end; gap:8px; }
+  .fechas .filtro-fecha { display:flex; flex-direction:column; margin-right:8px; vertical-align:middle; }
+  .fechas .filtro-fecha label { font-size:12px; font-weight:bold; color:#212529; display:block; margin-bottom:2px; }
+  .fechas .date-group,
+  .filtro-fecha .date-group { display:inline-block; border:1px solid #ced4da; border-radius:4px; background:#ffffff !important; background-color:#ffffff !important; overflow:hidden; width:165px; vertical-align:middle; }
+  .fechas .date-group .date-text,
+  .filtro-fecha .date-group .date-text { display:inline-block; width:120px; border:none; outline:none; padding:4px 6px; font-size:12px; color:#212529 !important; background:#ffffff !important; background-color:#ffffff !important; cursor:pointer; vertical-align:middle; }
+  .fechas .date-group input[type="date"] { position:absolute; opacity:0; width:0; height:0; min-width:0; min-height:0; border:none; background:transparent; pointer-events:none; clip:rect(0,0,0,0); }
+  .fechas .date-group .cal-btn,
+  .filtro-fecha .date-group .cal-btn { background:#ffffff !important; background-color:#ffffff !important; border:none; border-left:1px solid #ced4da; padding:0 6px; height:28px; cursor:pointer; display:inline-block; vertical-align:middle; }
+  .fechas .botonBuscar { display:inline-block; vertical-align:middle; margin-left:4px; }
 
-  .filtro-fecha { display:flex; flex-direction:column; gap:3px; }
-  .filtro-fecha label { font-size:12px; font-weight:bold; color:#212529; }
-  .date-group { display:flex; align-items:center; border:1px solid #ced4da; border-radius:4px; background:#fff; overflow:hidden; width:165px; }
-  .date-group .date-text { flex:1; border:none; outline:none; padding:6px 8px; font-size:13px; color:#212529; background:transparent; cursor:pointer; }
-  .date-group input[type="date"] { position:absolute; opacity:0; width:0; height:0; pointer-events:none; }
-  .date-group .cal-btn { background:#fff; border:none; border-left:1px solid #ced4da; padding:0 7px; height:34px; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .botonBuscar { background-color:#00A3E1; border:1px solid #00A3E1; color:#fff !important; padding:4px 12px; cursor:pointer; font-size:13px; font-weight:bold; border-radius:4px; height:30px; white-space:nowrap; }
+  .botonBuscar:hover { background-color:#0092c9; }
 
-  .botonBuscar { background-color:#17a2b8; border:1px solid #17a2b8; color:#fff !important; padding:6px 16px; cursor:pointer; font-size:13px; font-weight:bold; border-radius:4px; display:inline-flex; align-items:center; gap:6px; height:34px; white-space:nowrap; }
-  .botonBuscar:hover { background-color:#138496; }
-
-  .tabla-titulo { text-align:center; font-weight:bold; font-size:14px; margin-bottom:0; padding:6px 0; }
-  table { width:100%; border-collapse:collapse; font-size:13px; }
-  table thead tr { background-color:#17a2b8; }
-  table thead th { padding:9px 8px; text-align:center; font-weight:bold; color:#fff !important; white-space:nowrap; }
+  .tabla-titulo { text-align:center; font-weight:bold; font-size:13px; margin:6px 0 0 0; padding:5px 0; background-color:#00A3E1; color:#fff !important; }
+  table { width:100%; border-collapse:collapse; font-size:12px; }
+  table thead tr { background-color:#00A3E1; }
+  table thead th { padding:5px 6px; text-align:center; font-weight:bold; color:#fff !important; white-space:nowrap; }
   table tbody tr { background-color:#fff; border-bottom:1px solid #dee2e6; }
   table tbody tr:hover { background-color:#f8f9fa; }
-  table tbody td { padding:7px 8px; color:#212529; }
-  .empty-msg { text-align:center; color:#888; padding:20px; font-size:13px; }
-  .total-row td { background:#f0f0f0; font-weight:bold; padding:9px 8px; }
+  table tbody td { padding:4px 6px; color:#212529; }
+  .empty-msg { text-align:center; color:#888; padding:12px; font-size:13px; }
+  .total-row td { background:#f0f0f0; font-weight:bold; padding:5px 6px; }
+  .mail-row td { background:#fff; padding:6px 8px; }
+  .mail-icon { display:block; width:28px; height:20px; margin:0 auto; text-align:center; }
 
   .badge-credito   { background:#17a2b8; color:#fff !important; padding:2px 7px; border-radius:10px; font-size:11px; font-weight:bold; }
   .badge-cancelado { background:#28a745; color:#fff !important; padding:2px 7px; border-radius:10px; font-size:11px; font-weight:bold; }
   .badge-vencido   { background:#dc3545; color:#fff !important; padding:2px 7px; border-radius:10px; font-size:11px; font-weight:bold; }
   .badge-parcial   { background:#ffc107; color:#212529 !important; padding:2px 7px; border-radius:10px; font-size:11px; font-weight:bold; }
 
-  .acciones { display:flex; gap:5px; justify-content:center; }
-  .btn-accion { background:none; border:none; cursor:pointer; font-size:15px; padding:2px 4px; border-radius:3px; transition:background 0.15s; }
+  .acciones { text-align:center; }
+  .btn-accion { background:none; border:none; cursor:pointer; font-size:15px; padding:2px 4px; border-radius:3px; transition:background 0.15s; display:inline-block; margin:0 2px; }
   .btn-accion:hover { background:#e0e0e0; }
 
-  .reporte-bar { display:flex; align-items:center; justify-content:flex-end; gap:6px; margin-top:6px; font-size:13px; }
-  .reporte-bar span { font-weight:bold; color:#212529; }
-  .btn-reporte { background:none; border:none; cursor:pointer; padding:2px 3px; display:flex; align-items:center; transition:transform 0.15s; }
+  .pie-tabla { margin-top:8px; overflow:hidden; }
+  .leyenda { font-size:11px; color:#333; float:left; }
+  .leyenda b { color:#212529; margin-right:6px; }
+  .leyenda-item { display:inline-block; margin-right:6px; vertical-align:middle; }
+  .reporte-bar { font-size:12px; float:right; }
+  .reporte-bar span { font-weight:bold; color:#212529; margin-right:4px; }
+  .btn-reporte { background:none; border:none; cursor:pointer; padding:2px 3px; display:inline-block; vertical-align:middle; transition:transform 0.15s; }
   .btn-reporte:hover { transform:scale(1.2); }
 
-  .alert-success { background:#d4edda; border:1px solid #c3e6cb; color:#155724 !important; padding:8px 14px; border-radius:4px; margin-bottom:10px; font-size:13px; display:inline-block; }
-  .alert-danger  { background:#f8d7da; border:1px solid #f5c6cb; color:#721c24 !important; padding:8px 14px; border-radius:4px; margin-bottom:10px; font-size:13px; display:inline-block; }
+  .alert-success { background:#d4edda; border:1px solid #c3e6cb; color:#155724 !important; padding:6px 10px; border-radius:4px; margin-bottom:6px; font-size:12px; display:inline-block; }
+  .alert-danger  { background:#f8d7da; border:1px solid #f5c6cb; color:#721c24 !important; padding:6px 10px; border-radius:4px; margin-bottom:6px; font-size:12px; display:inline-block; }
 `;
+
+const IconBarChart = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+    <path d="M4 18v-6h4v6H4zM10 18V8h4v10h-4zM16 18v-3h4v3h-4z" fill="currentColor"/>
+    <rect x="3" y="4" width="18" height="16" rx="1" stroke="currentColor" strokeWidth="1.5" fill="none"/>
+  </svg>
+);
 
 const CalIcon = () => (
   <svg width="22" height="22" viewBox="0 0 36 36" fill="none">
-    <rect x="1" y="4" width="34" height="30" rx="3" fill="#fff" stroke="#bbb" strokeWidth="1.5"/>
+    <rect x="1" y="4" width="34" height="30" rx="3" fill="#fff" stroke="#ced4da" strokeWidth="1.5"/>
     <rect x="1" y="4" width="34" height="9"  rx="3" fill="#e74c3c"/>
     <rect x="1" y="9" width="34" height="4"  fill="#e74c3c"/>
-    <rect x="10" y="1" width="3" height="7" rx="1.5" fill="#888"/>
-    <rect x="23" y="1" width="3" height="7" rx="1.5" fill="#888"/>
+    <rect x="10" y="1" width="3" height="7" rx="1.5" fill="#adb5bd"/>
+    <rect x="23" y="1" width="3" height="7" rx="1.5" fill="#adb5bd"/>
     <line x1="1"  y1="18" x2="35" y2="18" stroke="#ddd" strokeWidth="0.8"/>
     <line x1="1"  y1="24" x2="35" y2="24" stroke="#ddd" strokeWidth="0.8"/>
     <line x1="10" y1="13" x2="10" y2="34" stroke="#ddd" strokeWidth="0.8"/>
@@ -76,11 +102,11 @@ const CalIcon = () => (
 
 const IconImprimir = () => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-    <rect x="4" y="2" width="16" height="20" rx="2" fill="#fff" stroke="#555" strokeWidth="1.5"/>
-    <line x1="7" y1="7"  x2="17" y2="7"  stroke="#555" strokeWidth="1.2"/>
-    <line x1="7" y1="10" x2="17" y2="10" stroke="#555" strokeWidth="1.2"/>
-    <line x1="7" y1="13" x2="14" y2="13" stroke="#555" strokeWidth="1.2"/>
-    <line x1="7" y1="16" x2="12" y2="16" stroke="#555" strokeWidth="1.2"/>
+    <rect x="4" y="2" width="16" height="20" rx="2" fill="#fff" stroke="#6c757d" strokeWidth="1.5"/>
+    <line x1="7" y1="7"  x2="17" y2="7"  stroke="#6c757d" strokeWidth="1.2"/>
+    <line x1="7" y1="10" x2="17" y2="10" stroke="#6c757d" strokeWidth="1.2"/>
+    <line x1="7" y1="13" x2="14" y2="13" stroke="#6c757d" strokeWidth="1.2"/>
+    <line x1="7" y1="16" x2="12" y2="16" stroke="#6c757d" strokeWidth="1.2"/>
   </svg>
 );
 
@@ -88,6 +114,42 @@ const IconExcel = () => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
     <rect x="2" y="2" width="20" height="20" rx="3" fill="#1D6F42"/>
     <text x="4" y="16" fontSize="11" fontWeight="bold" fill="#fff" fontFamily="Arial">XLS</text>
+  </svg>
+);
+
+const IconMail = ({ color = "#17a2b8" }) => (
+  <svg width="28" height="18" viewBox="0 0 28 18" fill="none">
+    <rect x="1" y="1" width="26" height="16" rx="2" fill={color} stroke={color}/>
+    <path d="M2 3l12 8 12-8" stroke="#fff" strokeWidth="1.6" fill="none"/>
+  </svg>
+);
+
+const IconMailBlack = () => (
+  <svg width="18" height="12" viewBox="0 0 28 18" fill="none">
+    <rect x="1" y="1" width="26" height="16" rx="2" fill="#495057" stroke="#495057"/>
+    <path d="M2 3l12 8 12-8" stroke="#fff" strokeWidth="1.4" fill="none"/>
+  </svg>
+);
+
+const IconMailGreen = () => (
+  <svg width="18" height="12" viewBox="0 0 28 18" fill="none">
+    <rect x="1" y="1" width="26" height="16" rx="2" fill="#20b54b" stroke="#20b54b"/>
+    <path d="M2 3l12 8 12-8" stroke="#fff" strokeWidth="1.4" fill="none"/>
+  </svg>
+);
+
+const IconTicket = () => (
+  <svg width="18" height="12" viewBox="0 0 28 18" fill="none">
+    <rect x="1" y="1" width="26" height="16" rx="2" fill="#7db3ff" stroke="#7db3ff"/>
+    <rect x="5" y="5" width="18" height="2" fill="#fff"/>
+    <rect x="5" y="9" width="10" height="2" fill="#fff"/>
+  </svg>
+);
+
+const IconNota = () => (
+  <svg width="18" height="12" viewBox="0 0 24 24" fill="none">
+    <path d="M3 6h12l6 6v6H3z" fill="#0a7f2e"/>
+    <path d="M7 8h6M7 12h8M7 16h5" stroke="#fff" strokeWidth="1.6" strokeLinecap="round"/>
   </svg>
 );
 
@@ -102,24 +164,30 @@ const DatePicker = ({ label, value, onChange }) => {
   return (
     <div className="filtro-fecha">
       <label>{label}</label>
-      <div className="date-group">
-        <span className="date-text" onClick={open}>
-          {fmt(value) || <span style={{color:'#adb5bd'}}>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>}
+      <div className="date-group" style={{ backgroundColor: '#ffffff' }}>
+        <span className="date-text" onClick={open} style={{ backgroundColor: '#ffffff' }}>
+          {fmt(value) || <span style={{ color: '#adb5bd' }}>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>}
         </span>
         <input ref={ref} type="date" value={value} onChange={e=>onChange(e.target.value)} tabIndex={-1}/>
-        <button type="button" className="cal-btn" onClick={open}><CalIcon/></button>
+        <button type="button" className="cal-btn" onClick={open} style={{ backgroundColor: '#ffffff' }}><CalIcon/></button>
       </div>
     </div>
   );
 };
 
-const RADIO_OPTS = ['Credito','Cancelado Y','Nro doc.','proveedor','RUC'];
+const RADIO_OPTS = [
+  { value: 'Credito', label: 'Credito' },
+  { value: 'Cancelado', label: 'Cancelado' },
+  { value: 'Nro doc.', label: 'Nro doc. /' },
+  { value: 'Cliente', label: 'Cliente /' },
+  { value: 'RUC', label: 'RUC' },
+];
 
 const DATOS_INICIALES = [
-  { id:1, doccomp:'L001-00011', proveedor:'Distribuidora Lima SAC',   fecha:'2026-03-05', credito:600.00,  dolares:600.00, soles:0.00,    fechap:'2026-04-05', estado:'Credito'   },
-  { id:2, doccomp:'L001-00022', proveedor:'Importaciones Norte EIRL', fecha:'2026-03-12', credito:1500.00, dolares:0.00,   soles:1500.00, fechap:'2026-04-12', estado:'Cancelado' },
-  { id:3, doccomp:'L002-00033', proveedor:'Comercial Sur SRL',         fecha:'2026-03-25', credito:900.00,  dolares:0.00,   soles:450.00,  fechap:'2026-04-25', estado:'Parcial'   },
-  { id:4, doccomp:'L001-00044', proveedor:'Proveedor Nacional SA',     fecha:'2026-02-20', credito:750.00,  dolares:750.00, soles:0.00,    fechap:'2026-03-20', estado:'Vencido'   },
+  { id:1, docvent:'L001-00011', cliente:'Distribuidora Lima SAC',   ruc:'20111111111', fecha:'2026-03-05', credito:600.00,  dolares:600.00, soles:0.00,    fechap:'2026-04-05', estado:'Credito'   },
+  { id:2, docvent:'L001-00022', cliente:'Importaciones Norte EIRL', ruc:'20122222222', fecha:'2026-03-12', credito:1500.00, dolares:0.00,   soles:1500.00, fechap:'2026-04-12', estado:'Cancelado' },
+  { id:3, docvent:'L002-00033', cliente:'Comercial Sur SRL',        ruc:'20133333333', fecha:'2026-03-25', credito:900.00,  dolares:0.00,   soles:450.00,  fechap:'2026-04-25', estado:'Parcial'   },
+  { id:4, docvent:'L001-00044', cliente:'Proveedor Nacional SA',    ruc:'20144444444', fecha:'2026-02-20', credito:750.00,  dolares:750.00, soles:0.00,    fechap:'2026-03-20', estado:'Vencido'   },
 ];
 
 const CtaPagarLetras = () => {
@@ -139,11 +207,11 @@ const CtaPagarLetras = () => {
     if (fechaFin)    res = res.filter(d => d.fecha <= fechaFin);
     if (busqueda) {
       const txt = busqueda.toLowerCase();
-      if (radioSel==='Cancelado Y') res = res.filter(d => d.estado==='Cancelado');
-      else if (radioSel==='Nro doc.') res = res.filter(d => d.doccomp.toLowerCase().includes(txt));
-      else if (radioSel==='proveedor') res = res.filter(d => d.proveedor.toLowerCase().includes(txt));
-      else if (radioSel==='RUC') res = res.filter(d => d.doccomp.toLowerCase().includes(txt));
-      else res = res.filter(d => d.estado.toLowerCase().includes(txt));
+      if (radioSel === 'Cancelado') res = res.filter(d => d.estado === 'Cancelado');
+      else if (radioSel === 'Nro doc.') res = res.filter(d => d.docvent.toLowerCase().includes(txt));
+      else if (radioSel === 'Cliente') res = res.filter(d => d.cliente.toLowerCase().includes(txt));
+      else if (radioSel === 'RUC') res = res.filter(d => d.ruc.toLowerCase().includes(txt));
+      else res = res.filter(d => d.estado.toLowerCase().includes(txt)); // Credito
     }
     setFiltrados(res);
     showMsg('success', `Se encontraron ${res.length} registro(s).`);
@@ -161,48 +229,68 @@ const CtaPagarLetras = () => {
 
   const handleImprimir = () => {
     const filas = filtrados.map((d,i) => `
-      <tr><td>${i+1}</td><td>${d.doccomp}</td><td>${d.proveedor}</td><td>${d.fecha}</td>
+      <tr><td>${i+1}</td><td>${d.docvent}</td><td>${d.cliente}</td><td>${d.fecha}</td>
       <td align="right">${d.credito.toFixed(2)}</td>
       <td align="right">US$ ${d.dolares.toFixed(2)}</td>
       <td align="right">S/. ${d.soles.toFixed(2)}</td>
       <td>${d.fechap}</td><td>${d.estado}</td></tr>`).join('');
-    const win = window.open('','_blank');
-    win.document.write(`<html><head><title>Cta x Pagar Letras</title>
-      <style>body{font-family:Arial,sans-serif;font-size:12px;}
-      h2{color:#17a2b8;border-bottom:2px solid #17a2b8;padding-bottom:5px;}
+    const html = `<!DOCTYPE html><html><head><meta charset="utf-8"><title>Cuentas por Cobrar - Letras</title>
+      <style>body{font-family:Arial,sans-serif;font-size:12px;margin:20px;}
+      .reporte-titulo{text-align:center;font-weight:bold;font-size:16px;text-transform:uppercase;margin-bottom:16px;color:#212529;}
       table{border-collapse:collapse;width:100%;}
-      th{background:#17a2b8;color:#fff;padding:7px;text-align:center;}
-      td{padding:5px 7px;border-bottom:1px solid #dee2e6;text-align:center;}
-      tr:nth-child(even){background:#f8f9fa;}
-      .total td{background:#f0f0f0;font-weight:bold;}</style></head>
-      <body><h2>CUENTA POR PAGAR : LETRAS — LISTADO</h2>
-      <table><thead><tr><th>ITEM</th><th>DOC.COMP.</th><th>PROVEEDOR</th><th>FECHA</th>
-      <th>CREDITO</th><th>M.DOLARES</th><th>M.SOLES</th><th>FECHAP.</th><th>ESTADO</th></tr></thead>
+      th{background:#333;color:#fff;padding:8px 6px;text-align:center;font-weight:bold;font-size:12px;}
+      td{padding:6px 8px;border:1px solid #dee2e6;text-align:center;font-size:12px;}
+      td.num{text-align:right;}
+      .total td{background:#f0f0f0;font-weight:bold;}
+      @media print{body{margin:0;} .no-print{display:none;}}</style></head>
+      <body>
+      <div class="reporte-titulo">CUENTAS POR COBRAR - LETRAS</div>
+      <table><thead><tr><th>Item</th><th>Doc.Vent.</th><th>Cliente</th><th>Fecha</th>
+      <th>Credito</th><th>M.Dolaes</th><th>M.Soles</th><th>FechaP.</th><th>Estado</th></tr></thead>
       <tbody>${filas}
       <tr class="total">
         <td colspan="5"></td>
-        <td>US$ ${totalDolares}</td>
-        <td>S/. ${totalSoles}</td>
+        <td class="num">US$ ${totalDolares}</td>
+        <td class="num">S/. ${totalSoles}</td>
         <td colspan="2"></td>
       </tr></tbody></table>
-      <p style="font-size:11px;color:#888;margin-top:10px;">Total: ${filtrados.length} registro(s)</p>
-      </body></html>`);
-    win.document.close(); win.print();
+      <p style="font-size:11px;color:#888;margin-top:12px;">Total: ${filtrados.length} registro(s)</p>
+      </body></html>`;
+    const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const win = window.open(url, '_blank', 'noopener,noreferrer');
+    if (!win) {
+      showMsg('danger', 'Permite ventanas emergentes para imprimir.');
+      URL.revokeObjectURL(url);
+      return;
+    }
+    win.onload = () => {
+      URL.revokeObjectURL(url);
+      win.focus();
+      win.print();
+    };
   };
 
   const handleExcel = () => {
-    const enc = ['ITEM','DOC.COMP.','PROVEEDOR','FECHA','CREDITO','M.DOLARES','M.SOLES','FECHA PAGO','ESTADO'];
+    const enc = ['ITEM','DOC.VENT.','CLIENTE','FECHA','CREDITO','M.DOLAES','M.SOLES','FECHAP.','ESTADO'];
     const filas = filtrados.map((d,i) =>
-      [i+1, d.doccomp, `"${d.proveedor}"`, d.fecha,
+      [i+1, d.docvent, `"${(d.cliente||'').replace(/"/g,'""')}"`, d.fecha,
        d.credito.toFixed(2), d.dolares.toFixed(2), d.soles.toFixed(2),
        d.fechap, d.estado].join(',')
     );
     const pie = [`,,,,,"US$ ${totalDolares}","S/. ${totalSoles}",,TOTAL`];
-    const csv = [enc.join(','), ...filas, ...pie].join('\n');
-    const blob = new Blob(['\uFEFF'+csv], {type:'text/csv;charset=utf-8;'});
-    const a = document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='cta_pagar_letras.csv'; a.click();
-    URL.revokeObjectURL(a.href);
-    showMsg('success','Archivo Excel descargado correctamente.');
+    const csv = [enc.join(','), ...filas, ...pie].join('\r\n');
+    const blob = new Blob(['\uFEFF'+csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `reporte_cta_pagar_letras_${new Date().toISOString().slice(0,10)}.csv`;
+    a.style.display = 'none';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    showMsg('success', 'Reporte descargado en Excel correctamente.');
   };
 
   return (
@@ -211,7 +299,7 @@ const CtaPagarLetras = () => {
       <div className="page-container">
 
         <div className="page-title">
-          <span style={{background:'#17a2b8',color:'#fff',borderRadius:'50%',width:22,height:22,display:'inline-flex',alignItems:'center',justifyContent:'center',fontSize:13}}>i</span>
+          <span className="info-dot">?</span>
           Cuenta por Pagar : Letras
         </div>
 
@@ -221,32 +309,45 @@ const CtaPagarLetras = () => {
           </div>
         )}
 
-        {/* FILTROS */}
-        <div className="filtro-wrap">
-          <div className="filtro-row1">
-            <span className="filtro-label">BUSCAR X</span>
-            <div className="radio-group">
-              {RADIO_OPTS.map(opt => (
-                <label key={opt}>
-                  <input type="radio" name="buscarx" value={opt}
-                    checked={radioSel===opt} onChange={()=>setRadioSel(opt)}/>
-                  {opt}
-                </label>
+        {/* FILTROS — igual que el sistema original (ol#idimput, li.five, li.twoss, li.twos) */}
+        <form className="filtros" onSubmit={(e)=>{ e.preventDefault(); buscar(); }}>
+          <div className="buscar-radios">
+            <div className="fila-radios">
+              <b className="label-buscar-x">BUSCAR X</b>
+              {RADIO_OPTS.map((opt, i) => (
+                <span key={opt.value}>
+                  {i === 2 && ' Y '}
+              <label className="radio-letras">
+                <input
+                  type="radio"
+                  name="buscarx"
+                  value={opt.value}
+                  checked={radioSel===opt.value}
+                  onChange={()=>setRadioSel(opt.value)}
+                />
+                <span><b>{opt.label}</b></span>
+              </label>
+                </span>
               ))}
             </div>
-          </div>
-          <div className="filtro-row2">
-            <div className="filtro-texto-wrap">
-              <input type="text" value={busqueda}
+            <div className="fila-input-yo">
+              <input
+                type="text"
+                className="input-buscar-x"
+                placeholder=""
+                value={busqueda}
                 onChange={e=>setBusqueda(e.target.value)}
-                onKeyDown={e=>e.key==='Enter'&&buscar()}/>
-              <span className="yo-label">y/o</span>
+                onKeyDown={e=>e.key==='Enter'&&(e.preventDefault(), buscar())}
+              />
+              <b> y/o</b>
             </div>
-            <DatePicker label="Fecha Inicio" value={fechaInicio} onChange={setFechaInicio}/>
-            <DatePicker label="Fecha Fin"    value={fechaFin}    onChange={setFechaFin}/>
-            <button className="botonBuscar" onClick={buscar}>🔍 Buscar</button>
           </div>
-        </div>
+          <div className="fechas">
+            <DatePicker label="Fecha Inicio" value={fechaInicio} onChange={setFechaInicio}/>
+            <DatePicker label="Fecha Fin" value={fechaFin} onChange={setFechaFin}/>
+            <button type="submit" className="botonBuscar">{'\u26DC'}\u00A0Buscar</button>
+          </div>
+        </form>
 
         {/* TABLA */}
         <div className="tabla-titulo">LISTADO</div>
@@ -254,15 +355,15 @@ const CtaPagarLetras = () => {
           <thead>
             <tr>
               <th width="5%">ITEM</th>
-              <th width="11%">DOC.COMP.</th>
-              <th>PROVEEDOR</th>
+              <th width="11%">DOC.VENT.</th>
+              <th>CLIENTE</th>
               <th width="9%">FECHA</th>
               <th width="9%">CREDITO</th>
               <th width="10%">M.DOLAES</th>
               <th width="9%">M.SOLES</th>
               <th width="9%">FECHAP.</th>
               <th width="9%">ESTADO</th>
-              <th width="8%">OPCIONES</th>
+              <th width="8%">OPCIONES.</th>
             </tr>
           </thead>
           <tbody>
@@ -281,8 +382,8 @@ const CtaPagarLetras = () => {
                 {filtrados.map((d,i) => (
                   <tr key={d.id}>
                     <td align="center">{i+1}</td>
-                    <td align="center">{d.doccomp}</td>
-                    <td>{d.proveedor}</td>
+                    <td align="center">{d.docvent}</td>
+                    <td>{d.cliente}</td>
                     <td align="center">{d.fecha}</td>
                     <td align="right">{d.credito.toFixed(2)}</td>
                     <td align="right">US$ {d.dolares.toFixed(2)}</td>
@@ -304,20 +405,31 @@ const CtaPagarLetras = () => {
                   <td align="center">S/. {totalSoles}</td>
                   <td colSpan="3"></td>
                 </tr>
+                <tr className="mail-row">
+                  <td colSpan="10" align="center"><span className="mail-icon"><IconMail/></span></td>
+                </tr>
               </>
             )}
           </tbody>
         </table>
 
-        {/* REPORTE — igual al screenshot */}
-        <div className="reporte-bar">
-          <span>Reporte:</span>
-          <button className="btn-reporte" title="Imprimir" onClick={handleImprimir}>
-            <IconImprimir/>
-          </button>
-          <button className="btn-reporte" title="Exportar Excel" onClick={handleExcel}>
-            <IconExcel/>
-          </button>
+        <div className="pie-tabla">
+          <div className="leyenda">
+            <b>Leyenda de OPCIONES:</b>
+            <span className="leyenda-item"><IconMailBlack/> Notificar Grupal</span>
+            <span className="leyenda-item"><IconMailGreen/> notificacion Individual</span>
+            <span className="leyenda-item"><IconTicket/> Imprimir Ticket</span>
+            <span className="leyenda-item"><IconNota/> Generar Nota de Credito</span>
+          </div>
+          <div className="reporte-bar">
+            <span>Reporte:</span>
+            <button type="button" className="btn-reporte" title="Imprimir" onClick={handleImprimir}>
+              <IconImprimir/>
+            </button>
+            <button type="button" className="btn-reporte" title="Exportar Excel" onClick={handleExcel}>
+              <IconExcel/>
+            </button>
+          </div>
         </div>
 
       </div>

@@ -3,16 +3,20 @@ import React, { useState, useRef } from 'react';
 const styles = `
   .page-container { padding:20px; font-family:Arial,Helvetica,sans-serif; font-size:13px; }
   .page-container * { color:#212529; box-sizing:border-box; }
-  .page-title { font-size:16px; font-weight:bold; margin-bottom:14px; display:flex; align-items:center; gap:8px; }
+  .page-title { font-size:16px; font-weight:bold; margin-bottom:10px; display:flex; align-items:center; gap:8px; }
+  .info-dot { background:#17a2b8; color:#fff !important; border-radius:50%; width:22px; height:22px; display:inline-flex; align-items:center; justify-content:center; font-size:13px; }
 
   /* FILTROS */
-  .filtro-wrap { margin-bottom:18px; }
-  .filtro-row1 { display:flex; align-items:center; gap:6px; flex-wrap:wrap; margin-bottom:6px; }
+  .filtro-wrap { margin-bottom:14px; }
+  .filtro-row1 { display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:8px; }
   .filtro-row2 { display:flex; align-items:flex-end; gap:10px; flex-wrap:wrap; }
   .filtro-label { font-weight:bold; font-size:13px; white-space:nowrap; }
   .radio-group  { display:flex; align-items:center; gap:14px; flex-wrap:wrap; }
   .radio-group label { display:flex; align-items:center; gap:4px; cursor:pointer; font-size:13px; white-space:nowrap; }
   .radio-group input[type="radio"] { cursor:pointer; accent-color:#17a2b8; }
+  .estado-group { display:flex; align-items:center; gap:14px; flex-wrap:wrap; }
+  .estado-group label { display:flex; align-items:center; gap:4px; cursor:pointer; font-size:13px; white-space:nowrap; }
+  .print-group { display:flex; align-items:center; gap:10px; }
 
   .filtro-texto-wrap { display:flex; align-items:center; gap:6px; flex:1; min-width:200px; }
   .filtro-texto-wrap input[type="text"] { flex:1; padding:6px 10px; border:1px solid #ced4da; border-radius:4px; font-size:13px; color:#212529; background:#fff; }
@@ -31,16 +35,19 @@ const styles = `
   .botonBuscar:hover { background-color:#138496; }
 
   /* TABLA */
-  .tabla-titulo { text-align:center; font-weight:bold; font-size:14px; margin-bottom:0; padding:6px 0; }
+  .tabla-titulo { text-align:center; font-weight:bold; font-size:14px; margin:6px 0 4px; }
   table { width:100%; border-collapse:collapse; font-size:13px; }
   table thead tr { background-color:#17a2b8; }
   table thead th { padding:9px 8px; text-align:center; font-weight:bold; color:#fff !important; white-space:nowrap; }
   table tbody tr { background-color:#fff; border-bottom:1px solid #dee2e6; }
+  table tbody tr:nth-child(even) { background:#f2f2f2; }
   table tbody tr:hover { background-color:#f8f9fa; }
   table tbody td { padding:7px 8px; color:#212529; }
   .empty-msg { text-align:center; color:#888; padding:20px; font-size:13px; }
 
   .total-row td { background:#f0f0f0; font-weight:bold; padding:9px 8px; }
+  .opciones { display:flex; gap:6px; justify-content:center; }
+  .opcion-btn { background:none; border:none; cursor:pointer; padding:2px; display:inline-flex; align-items:center; }
 
   /* ESTADO badges */
   .badge-credito   { background:#17a2b8; color:#fff !important; padding:2px 7px; border-radius:10px; font-size:11px; font-weight:bold; }
