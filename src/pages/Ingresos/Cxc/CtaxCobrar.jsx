@@ -236,7 +236,7 @@ export default function CuentaPorCobrar() {
   const totalDeuda = data.reduce((s, r) => s + r.deuda, 0);
 
   return (
-    <div style={{ fontFamily: "Arial, sans-serif", background: "#fff", minHeight: "100vh", color: "#222", padding: "16px 20px" }}>
+    <div style={{ fontFamily: "Arial, sans-serif", background: "#fff", color: "#222", padding: "16px 20px" }}>
       <style>{`
         * { box-sizing: border-box; margin: 0; padding: 0; }
 
