@@ -945,4 +945,6 @@ git push origin main                 # Subir al repositorio
 
 ---
 
+#REPORTES
+
 > © 2009 - 2026 **INTELIGENTE** — Todos los derechos reservados
