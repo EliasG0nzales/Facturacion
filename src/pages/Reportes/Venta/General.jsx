@@ -186,4 +186,4 @@ const cellStyle = {
   border: '1px solid #fff'
 };
 
-export default GeneralReporte;
+export default GeneralReporte; 
