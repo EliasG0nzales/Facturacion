@@ -2,8 +2,8 @@
 
 > Sistema de gestión empresarial completo desarrollado en **React + Vite**, que cubre módulos de Autenticación, ABM, Egresos, Ingresos, Reportes y CMS Web.
 
-![React](https://img.shields.io/badge/React-18-blue?logo=react)
-![Vite](https://img.shields.io/badge/Vite-5-purple?logo=vite)
+![React](https://img.shields.io/badge/React-19-blue?logo=react)
+![Vite](https://img.shields.io/badge/Vite-7-purple?logo=vite)
 ![JavaScript](https://img.shields.io/badge/JavaScript-ES6+-yellow?logo=javascript)
 ![License](https://img.shields.io/badge/License-MIT-green)
 
@@ -408,9 +408,9 @@ Control de cuentas por pagar a proveedores con seguimiento de vencimientos.
 
 Gestión de letras de cambio emitidas como medio de pago a proveedores.
 
-- **Vista Lista:** tabla Proveedor/Letra Nro/Fecha Emisión/Fecha Vencimiento/Monto/Estado, badges Pendiente/Al Cobro/Protestada/Pagada, filtros por proveedor/estado/fecha, ícono ✏ por fila
-- **Modal Editar:** actualización de estado, fecha de pago efectivo, banco y referencia
-- **Totales:** monto total de letras pendientes en S/. y US$.
+- **Vista Lista:** BUSCAR X con filtros por Credito/Cancelado/Nro doc./Cliente/RUC, Fecha Inicio/Fin, tabla con Doc.Vent., Cliente, Fecha, Credito, M.Dolaes, M.Soles, FechaP., Estado, íconos de acción por fila
+- **Reportes:** botón Imprimir (abre reporte "CUENTAS POR COBRAR - LETRAS" en ventana nueva) y botón Excel (descarga CSV)
+- **Totales:** monto total en S/. y US$, leyenda de opciones (Notificar Grupal, Individual, Imprimir Ticket, Generar Nota de Crédito)
 
 ---
 
@@ -555,18 +555,68 @@ Control del crédito acumulado por cliente con 10 acciones por comprobante.
 
 ### 🏦 Cta. x Cobrar
 
-> ⚠️ **En integración** — Este sub-módulo está siendo desarrollado por otro miembro del equipo.
+Accesible desde **Ingreso › Cta. x Cobrar**. Sub-módulo de cuentas por cobrar con seis vistas especializadas.
 
-Accesible desde **Ingreso › Cta. x Cobrar**.
+---
 
-| Componente | Descripción | Estado |
-|---|---|---|
-| `CtaxCobrar.jsx` | Listado general de cuentas por cobrar activas con saldos | 🔧 En desarrollo |
-| `CxcLetras.jsx` | Letras de cambio emitidas pendientes de cobro | 🔧 En desarrollo |
-| `CxcPendiente.jsx` | Cuentas vencidas y próximas a vencer con alertas | 🔧 En desarrollo |
-| `CxcTotal.jsx` | Resumen totalizado por cliente y período | 🔧 En desarrollo |
-| `CxcCobranza.jsx` | Proceso de cobranza con seguimiento de pagos parciales | 🔧 En desarrollo |
-| `CxcContable.jsx` | Vista contable con asientos y movimientos por cobrar | 🔧 En desarrollo |
+#### 📋 Cta. x Cobrar — `CtaxCobrar.jsx`
+
+Listado general de cuentas por cobrar activas con saldos pendientes.
+
+---
+
+#### 📜 Cta. x Cobrar - Letras — `CxcLetras.jsx`
+
+Gestión de letras de cambio emitidas pendientes de cobro a clientes.
+
+---
+
+#### 🕐 Cta. x Cobrar - Pendiente — `CxcPendiente.jsx`
+
+Reporte **CUENTA POR COBRAR - PENDIENTE** con detalle por documento y cliente.
+
+- **Título:** Centrado, 18px Arial
+- **Tabla:** columnas RUC, Cliente, Doc.Venta, FEC.DOC., FEC.VEN., REF., MO, M., Saldo, OT
+- **Cada cliente:** fila principal con datos del documento; subfila "SALDO DE ANEXO : [RUC]" con S/. y monto; fila vacía separadora
+- **Fila total:** "SALDO POR COBRAR" con total en negrita (fondo gris)
+- **Hover:** filas con fondo verde claro (#CCFF66)
+- **Export:** botón Excel verde (#39B636) → descarga CSV con nombre `cuenta_por_cobrar_pendiente_YYYY-MM-DD.csv`
+
+---
+
+#### 📊 Cta. x Cobrar - Pendiente Total — `CxcTotal.jsx`
+
+Reporte **CUENTA POR COBRAR - PENDIENTE TOTALIZADO** resumido por documento.
+
+- **Título:** Centrado, 18px Arial
+- **Tabla:** columnas RUC, Cliente, Doc.Venta, FEC.DOC., FEC.VEN., REF., MO, M., **CREDITO**, **Saldo**
+- **Sin subfilas:** una fila por documento (sin SALDO DE ANEXO)
+- **Fila vacía** entre cada cliente
+- **Fila total:** "TOTAL" con CREDITO y Saldo totalizados (fondo gris)
+- **Export:** botón Excel → descarga CSV `cuenta_por_cobrar_pendiente_total_YYYY-MM-DD.csv`
+
+---
+
+#### 💰 Cta. x Cobrar - Cobranza — `CxcCobranza.jsx`
+
+Reporte **CUENTA POR COBRAR - COBRANZA** con seguimiento por responsable.
+
+- **Título:** Centrado, 18px Arial
+- **Tabla:** columnas RUC, Cliente, Doc.Venta, FEC.DOC., FEC.VEN., REFERENCIA, MO, M., Saldo, OT, **RESPONSABLE**
+- **Cada cliente:** fila principal; subfila "SALDO DEL DOCUMENTO : [RUC]", subfila "SALDO DE CLIENTE : [RUC]" en negrita; fila vacía separadora
+- **Hover:** filas con fondo verde claro (#CCFF66)
+- **Export:** botón Excel → descarga CSV `cuenta_por_cobrar_cobranza_YYYY-MM-DD.csv`
+
+---
+
+#### 📒 Cta. x Cobrar - Contable — `CxcContable.jsx`
+
+Reporte **CUENTA POR COBRAR - CONTABLE** con vista contable completa.
+
+- **Título:** Centrado, 18px Arial
+- **Tabla:** 23 columnas — CAMPO, S.D., NRO C., FECHA C., C.MONEDA, GLOSA, T.C., T.CV, F.C., F.T.C., C.CONT., C.ANEX, C.C.C., D/H, IMP.O., S/., US$, T.DOC, N.DOC, F.DOC, F.D.V., C.A., G.DETALLE
+- **Cabecera:** fondo azul (#00A3E1)
+- **Export:** botón Excel → descarga CSV con encabezados `cuenta_por_cobrar_contable_YYYY-MM-DD.csv`
 
 ---
 
@@ -887,12 +937,10 @@ git push origin main                 # Subir al repositorio
 
 | Tecnología | Versión | Uso |
 |---|---|---|
-| React | 18 | Librería principal de UI |
-| Vite | 5 | Bundler y servidor de desarrollo |
-| JavaScript ES6+ | — | Lógica de negocio y componentes |
-| React Router DOM | 6 | Navegación entre páginas |
-| Axios | — | Llamadas HTTP a la API |
-| Recharts | — | Gráficos en reportes |
+| React | 19 | Librería principal de UI |
+| Vite | 7 | Bundler y servidor de desarrollo |
+| React Router DOM | 7 | Navegación entre páginas |
+| xlsx | 0.18 | Exportación a Excel/CSV |
 | CSS inline | — | Estilos encapsulados por componente |
 
 ---
