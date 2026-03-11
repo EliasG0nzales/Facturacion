@@ -947,4 +947,44 @@ git push origin main                 # Subir al repositorio
 
 ### REPORTES
 
+#### Carpeta `src/pages/Reportes/Articulo`
+
+Se migraron y ajustaron en React (solo frontend) los siguientes módulos:
+
+- `StockGeneral.jsx`
+  - Vista de stock por almacén/local/sucursal.
+  - Búsqueda por tipo (`Nombre`, `Linea`, `Categoria`, `Marca`, `Codigo`, `C.Barra`, `Menor a`).
+  - Barra de progreso visual y exportación a Excel.
+
+- `GeneralXSucursal.jsx`
+  - Reporte de stock general por sucursal.
+  - Filtros por sucursal, estado de stock y tipo de búsqueda.
+  - Paginación y exportación (impresión, Excel y Word).
+
+- `Valorizado.jsx`
+  - Reporte de stock valorizado con cálculos de costo, valor de venta y ganancia.
+  - Totales en USD y soles.
+  - Opción de paginación o listado completo.
+
+- `CompraVenta.jsx`
+  - Reporte de comprados vs vendidos.
+  - Filtros por sucursal y criterio de búsqueda.
+  - Exportación a impresión, Excel y Word.
+
+- `Lotes.jsx`
+  - Estructura visual replicada del reporte original de lotes.
+  - Filtros por fecha (inicio/fin) con botón `Buscar`.
+  - Tabla mantenida como maqueta frontend (sin carga de datos por ahora).
+
+- `Digemid.jsx`
+  - Vista principal de listado general con acciones frontend.
+  - Vista `Caja` con:
+    - `Regresar`, selector por rubro (`Todos`, `Componentes PC`, `Computo`, `Memorias`, `Monitores`, `Perifericos`, `Suministros`) y `exportar a Exel`.
+    - Filtrado en tiempo real de la tabla según selección.
+  - Vista `Drogeria` con:
+    - `Regresar`, `Iniciar nuevo listado` (estilo celeste) y `exportar a Excel`.
+    - Tabla de encabezados (`Precio Minimo`, `Precio Max`, `Precio Prom`) según diseño solicitado.
+
+> Nota: toda esta etapa se dejó intencionalmente en modo frontend, sin integración a API.
+
 > © 2009 - 2026 **INTELIGENTE** — Todos los derechos reservados
