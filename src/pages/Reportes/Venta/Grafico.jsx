@@ -1,5 +1,6 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { getTotalesPorDepartamento, DEPARTAMENTOS_PERU } from "./ventasPorDepartamento";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid,
   Tooltip, Legend, ResponsiveContainer,
@@ -507,26 +508,14 @@ function PaginaMensual({ onVolver }) {
 }
 
 // ── PÁGINA: Por Departamentos ─────────────────────────────────────
-const DEPARTAMENTOS = [
-  "Amazonas","Ancash","Apurimac","Arequipa","Ayacucho","Cajamarca",
-  "Callao","Cusco","Huancavelica","Huánuco","Ica","Junin",
-  "La Libertad","Lambayeque","Lima","Loreto","Madre de Dios","Moquegua",
-  "Pasco","Piura","Puno","San Martin","Tacna","Tumbes","Ucayali",
-];
+const DEPARTAMENTOS = DEPARTAMENTOS_PERU;
 
 function PaginaDepartamentos({ onVolver }) {
   const [anio, setAnio] = useState(new Date().getFullYear().toString());
   const navigate = useNavigate();
 
-  // Datos simulados — en producción vendrían de la API
-  const [datos] = useState(() => {
-    const d = {};
-    DEPARTAMENTOS.forEach((dep) => {
-      d[dep] = Math.random() > 0.7 ? Math.round(Math.random() * 50000 + 1000) : 0;
-    });
-    return d;
-  });
-
+  // Mismos datos que el Reporte General — totales por departamento
+  const datos = getTotalesPorDepartamento();
   const maxVal = Math.max(...Object.values(datos), 1);
 
   return (
@@ -577,11 +566,11 @@ function PaginaDepartamentos({ onVolver }) {
                     onClick={() => navigate(`/rep-venta-gen?tipo=31&venta=${encodeURIComponent(dep)}&annnn=${anio}`)}
                     style={{
                       background: "none", border: "none", cursor: "pointer",
-                      color: "#17a2b8", fontSize: 18, padding: 0, lineHeight: 1,
+                      color: "#17a2b8", fontSize: 16, padding: "0 4px", lineHeight: 1,
                     }}
-                    title={`Ver reporte de ${dep}`}
+                    title={`Ver reporte general de ${dep}`}
                   >
-                    ↘
+                    ⌄
                   </button>
                 </td>
 
@@ -618,7 +607,13 @@ function PaginaDepartamentos({ onVolver }) {
 
 // ── Componente principal con "router" interno ─────────────────────
 export default function Grafico() {
-  const [pagina, setPagina] = useState("inicio");
+  const [searchParams] = useSearchParams();
+  const vistaParam = searchParams.get("vista");
+  const [pagina, setPagina] = useState(vistaParam === "depto" ? "depto" : "inicio");
+
+  useEffect(() => {
+    if (vistaParam === "depto") setPagina("depto");
+  }, [vistaParam]);
 
   return (
     <div style={{ fontFamily: "Tahoma, Arial, sans-serif", maxWidth: 900, margin: "0", padding: 16 }}>

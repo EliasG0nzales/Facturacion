@@ -32,11 +32,27 @@ const styles = `
   .kdx-input { min-width:136px; width:136px; }
   .botonNuevo {
     background:#17a2b8; border:1px solid #17a2b8; color:#fff !important;
-    padding:6px 14px; border-radius:6px; font-weight:bold; cursor:pointer; font-size:24px;
+    padding:6px 14px; border-radius:6px; font-weight:bold; cursor:pointer; font-size:14px;
+    display:inline-flex; align-items:center;
   }
   .botonNuevo:hover { background:#138496; }
-  .kdx-result { margin-top:6px; width:100%; min-height:120px; }
-  .kdx-subtitle { text-align:center; font-size:30px; font-weight:bold; margin-top:2px; }
+  .kdx-result { margin-top:16px; width:100%; min-height:120px; }
+  .kdx-subtitle { text-align:center; font-size:18px; font-weight:bold; margin-top:2px; }
+  .kdx-articulo { text-align:center; font-size:14px; margin:8px 0; padding:4px 0; }
+  .kdx-table-wrap { width:100%; overflow-x:auto; margin-top:8px; }
+  .kdx-table {
+    width:100%; border-collapse:collapse; font-size:13px;
+    border:1px solid #dee2e6;
+  }
+  .kdx-table thead tr { background:#C2D1D0; }
+  .kdx-table thead td {
+    padding:8px 10px; font-weight:bold; border:1px solid #b8c5c4;
+  }
+  .kdx-table tbody tr { background:#fff; }
+  .kdx-table tbody tr:nth-child(even) { background:#f0f4f3; }
+  .kdx-table tbody td {
+    padding:8px 10px; border:1px solid #dee2e6;
+  }
   .kdx-tools { margin-top:8px; text-align:right; }
   .kdx-tools button {
     border:none; background:none; cursor:pointer; margin-left:8px; padding:0;
@@ -55,7 +71,7 @@ const IconPrint = () => (
 
 const IconExcel = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
-    <rect x="4.5" y="3.5" width="15" height="17" rx="1.6" fill="#2E8F4E" />
+    <rect x="4.5" y="3.5" width="15" height="17" rx="1.6" fill="#39B636" />
     <text x="12" y="16" textAnchor="middle" fontSize="9.5" fontWeight="700" fill="#fff" fontFamily="Arial,Helvetica,sans-serif">
       X
     </text>
@@ -66,16 +82,32 @@ const Kardex = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [tipo, setTipo] = useState('FISICO');
   const [soloAnual, setSoloAnual] = useState(false);
-  const [productoId, setProductoId] = useState('');
   const [fechaInicio, setFechaInicio] = useState('');
   const [fechaFin, setFechaFin] = useState('');
   const [buscado, setBuscado] = useState(false);
   const vista = searchParams.get('vista') === 'grupo-costo' ? 'grupo-costo' : 'articulo';
 
   const productos = useMemo(
-    () => STOCK_DATA.map((p, i) => ({ id: String(i + 1), nombre: p.nombre })),
+    () => STOCK_DATA.map((p, i) => ({
+      id: String(i + 1),
+      nombre: p.nombre,
+      saldo: (p.almacen || 0) + (p.tienda1 || 0) + (p.tienda2 || 0),
+    })),
     []
   );
+
+  const defaultProductId = useMemo(() => {
+    const idx = STOCK_DATA.findIndex((p) =>
+      p.nombre.toLowerCase().includes('adaptador usb tp link')
+    );
+    return idx >= 0 ? String(idx + 1) : '';
+  }, []);
+
+  const [productoId, setProductoId] = useState(defaultProductId);
+
+  const productoSeleccionado = productoId
+    ? productos.find((p) => p.id === productoId)
+    : null;
 
   const buscar = (e) => {
     e.preventDefault();
@@ -218,7 +250,12 @@ const Kardex = () => {
                 <input type="date" className="kdx-input" value={fechaFin} onChange={(e) => setFechaFin(e.target.value)} />
               </li>
               <li>
-                <button type="submit" className="botonNuevo">Buscar</button>
+                <button type="submit" className="botonNuevo">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style={{ verticalAlign: 'middle', marginRight: 6 }}>
+                    <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
+                  </svg>
+                  Buscar
+                </button>
               </li>
             </ol>
           </div>
@@ -226,7 +263,43 @@ const Kardex = () => {
 
         <div id="printme" className="kdx-result">
           {(vista === 'grupo-costo' || buscado) && (
-            <div className="kdx-subtitle">{tipo === 'KARDEX VALORIZADO' ? 'KARDEX VALORIZADO' : 'KARDEX FISICO'}</div>
+            <center>
+              <b className="kdx-subtitle">
+                {tipo === 'KARDEX VALORIZADO' ? 'KARDEX VALORIZADO' : 'KARDEX FISICO'}
+              </b>
+              <br />
+              <hr />
+              {vista === 'articulo' && productoSeleccionado && (
+                <>
+                  <div className="kdx-articulo">{productoSeleccionado.nombre}</div>
+                  <hr />
+                  <div className="kdx-table-wrap">
+                    <table className="kdx-table">
+                      <thead>
+                        <tr>
+                          <td><b>Tipo</b></td>
+                          <td><b>Fecha</b></td>
+                          <td><b>Docum.</b></td>
+                          <td><b>Nro</b></td>
+                          <td><b>Cantidad</b></td>
+                          <td><b>Saldo</b></td>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td></td>
+                          <td></td>
+                          <td><b>Saldo anterior</b></td>
+                          <td></td>
+                          <td></td>
+                          <td data-label="Saldo anterior"><b>{productoSeleccionado.saldo}</b></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </>
+              )}
+            </center>
           )}
         </div>
 

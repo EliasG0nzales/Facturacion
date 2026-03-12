@@ -1,6 +1,7 @@
 import { useState, useRef } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, Link } from "react-router-dom";
 import * as XLSX from "https://cdn.sheetjs.com/xlsx-0.20.0/package/xlsx.mjs";
+import { VENTAS_DATA, normalizarDepto } from "./ventasPorDepartamento";
 
 const DOCUMENTOS = ["Boleta","Factura","Nota de Venta","FacturaBoleta","GUIA"];
 const SUCURSALES = [
@@ -28,15 +29,6 @@ const tdBase    = { padding: "6px 10px", fontSize: 12, borderBottom: "1px solid 
 const selectSt  = { border: "1px solid #ccc", borderRadius: 3, padding: "3px 6px", fontSize: 12, background: "#fff", color: "#333" };
 const inputSt   = { border: "1px solid #ccc", borderRadius: 3, padding: "4px 8px", fontSize: 12, background: "#fff", color: "#333" };
 
-// Datos simulados — reemplazar con llamada a API real
-const VENTAS_DATA = [
-  { doc: "B::BI01-000033", fecha: "03/03/2026(16:43:13)", cliente: "Aaron Smith Iturri Quispe",  ruc: "75845811",    vendedor: "usuario",   tventa: "Contado Efectivo", dolares: 0, soles: 3159.75, tipo: "Contado" },
-  { doc: "B::BI01-000034", fecha: "03/03/2026(17:19:35)", cliente: "Raysa Yupanqui Barboza",     ruc: "75845811",    vendedor: "usuario",   tventa: "Contado Efectivo", dolares: 0, soles: 1053.25, tipo: "Contado" },
-  { doc: "B::BI01-000035", fecha: "06/03/2026(14:53:49)", cliente: "Raysa Yupanqui Barboza",     ruc: "75845811",    vendedor: "usuario",   tventa: "Contado Efectivo", dolares: 0, soles:  605.14, tipo: "Contado" },
-  { doc: "B::BI01-000036", fecha: "07/03/2026(11:19:32)", cliente: "Gabriela Ines Luna Flores",  ruc: "60869824",    vendedor: "usuario",   tventa: "Contado Efectivo", dolares: 0, soles: 1898.00, tipo: "Contado" },
-  { doc: "F::FI01-000001", fecha: "26/02/2026(15:37:53)", cliente: "Inteligente S.a.c.",         ruc: "20523520025", vendedor: "Alexander", tventa: "Credito",          dolares: 0, soles:   80.00, tipo: "Credito" },
-];
-
 export default function General() {
   const [searchParams] = useSearchParams();
   const tipoParam  = searchParams.get("tipo")  || "1";
@@ -53,7 +45,16 @@ export default function General() {
   const [consultado,  setConsultado]  = useState(!!ventaParam);
   const tableRef = useRef(null);
 
-  const ventas = consultado ? VENTAS_DATA : [];
+  // Filtrar por departamento cuando viene del reporte gráfico (tipo=31, venta=nombreDepto)
+  const ventas = consultado
+    ? (ventaParam && tipoParam === "31"
+        ? VENTAS_DATA.filter(
+            (v) =>
+              v.departamento &&
+              normalizarDepto(v.departamento) === normalizarDepto(ventaParam)
+          )
+        : VENTAS_DATA)
+    : [];
 
   const contado  = ventas.filter(v => v.tipo === "Contado");
   const credito  = ventas.filter(v => v.tipo === "Credito");
@@ -155,10 +156,18 @@ export default function General() {
       </div>
 
       {/* Info si viene de Departamentos */}
-      {ventaParam && (
-        <div style={{ marginBottom:8, fontSize:12, color:"#555" }}>
-          Departamento: <strong>{ventaParam}</strong>
-          {anioParam && <> — Año: <strong>{anioParam}</strong></>}
+      {ventaParam && tipoParam === "31" && (
+        <div style={{ marginBottom:8, fontSize:12, color:"#555", display:"flex", alignItems:"center", gap:12, flexWrap:"wrap" }}>
+          <span>
+            Departamento: <strong>{ventaParam}</strong>
+            {anioParam && <> — Año: <strong>{anioParam}</strong></>}
+          </span>
+          <Link
+            to="/rep-venta-graf?vista=depto"
+            style={{ color:"#17a2b8", textDecoration:"underline", fontSize:12 }}
+          >
+            ↩ Volver al reporte gráfico (Departamentos)
+          </Link>
         </div>
       )}
 
