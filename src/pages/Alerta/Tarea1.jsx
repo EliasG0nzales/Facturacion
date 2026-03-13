@@ -1,17 +1,18 @@
 import React from "react";
 
 
-function Credito2() {
+function Tarea1() {
   return (
     <>
       <Navbar />
     <div>
-      <h2>Credito 2</h2>
-      <p>Contenido de credito 2</p>
+      <h2>Tarea 1</h2>
+      <p>Contenido de tareas</p>
     </div>
           <Footer />
     </>
   );
 }
 
-export default Credito2;
+export default Tarea1;
+

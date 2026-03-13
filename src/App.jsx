@@ -72,10 +72,6 @@ import ContVenta      from './pages/Reportes/Contable/Venta';
 import Asistencia     from './pages/Reportes/Asistencia';
 import MovBancarios   from './pages/Reportes/MovBancarios';
 
-//Alerta
-import Tarea1         from './pages/Alerta/Tareas1';
-import Credito2       from './pages/Alerta/credito2';
-
 import './App.css';
 
 const Layout = ({ children }) => (
@@ -165,10 +161,6 @@ function App() {
           <Route path="/cont-venta"     element={<Layout><ContVenta /></Layout>} />
           <Route path="/asistencia"     element={<Layout><Asistencia /></Layout>} />
           <Route path="/mov-bancarios"  element={<Layout><MovBancarios /></Layout>} />
-
-          {/*Alerta*/}
-          <Route path="/Tarea1"  element={<Layout><Tarea1 /></Layout>} />
-          <Route path="/Credito2"  element={<Layout><Credito2 /></Layout>} />
 
         </Routes>
       </div>
