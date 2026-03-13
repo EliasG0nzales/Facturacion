@@ -1,624 +1,634 @@
-// src/pages/Reportes/Asistencia.jsx
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useEffect, useMemo, useState } from "react";
+import { Search, CalendarDays, ThumbsUp, ChevronLeft, ChevronRight } from "lucide-react";
 
-// ═══════════════════════════════════════════════════════════
-// ESTILOS
-// ═══════════════════════════════════════════════════════════
+const dataA = [
+  ["fac-tura.com", "::1", "16/09/2019", "20:27"],
+  ["fac-tura.com", "::1", "20/01/2021", "12:56"],
+  ["fac-tura.com", "::1", "22/01/2021", "19:48"],
+  ["fac-tura.com", "::1", "23/01/2021", "15:49"],
+  ["fac-tura.com", "::1", "25/01/2021", "21:44"],
+  ["fac-tura.com", "::1", "27/01/2021", "23:54"],
+  ["fac-tura.com", "::1", "07/02/2021", "10:47"],
+  ["fac-tura.com", "::1", "14/06/2021", "11:33"],
+  ["fac-tura.com", "::1", "15/06/2021", "11:23"],
+  ["fac-tura.com", "::1", "13/08/2021", "17:14"],
+  ["fac-tura.com", "::1", "19/08/2021", "21:18"],
+  ["fac-tura.com", "190.233.58.89", "15/12/2023", "22:25"],
+  ["fac-tura.com", "38.43.130.119", "16/12/2023", "10:31"],
+  ["fac-tura.com", "38.25.12.189", "18/12/2023", "13:41"],
+  ["fac-tura.com", "38.43.130.119", "27/12/2023", "17:54"],
+  ["Romero, Merino, Alexander Renson", "200.121.132.145", "27/12/2023", "18:05"],
+  ["fac-tura.com", "38.43.130.187", "30/12/2023", "10:39"],
+  ["fac-tura.com", "38.43.130.187", "08/01/2024", "17:53"],
+  ["fac-tura.com", "38.43.130.187", "13/01/2024", "11:26"],
+  ["fac-tura.com", "38.43.130.187", "16/01/2024", "14:08"],
+  ["fac-tura.com", "38.43.130.187", "22/01/2024", "14:49"],
+  ["fac-tura.com", "38.43.130.187", "23/01/2024", "10:48"],
+  ["fac-tura.com", "132.251.1.116", "25/01/2024", "10:20"],
+  ["fac-tura.com", "38.43.130.187", "26/01/2024", "15:21"],
+  ["Merino, Cahuna, Wilver Enmanuel", "38.43.130.187", "26/01/2024", "18:15"],
+  ["fac-tura.com", "38.43.130.187", "27/01/2024", "13:36"],
+  ["fac-tura.com", "38.43.130.187", "29/01/2024", "11:26"],
+  ["Romero, Merino, Alexander Renson", "38.43.130.187", "29/01/2024", "18:02"],
+  ["fac-tura.com", "170.246.58.51", "30/01/2024", "15:02"],
+  ["Romero, Merino, Alexander Renson", "170.246.58.51", "30/01/2024", "19:01"],
+  ["Merino, Cahuna, Wilver Enmanuel", "170.246.58.51", "30/01/2024", "19:31"],
+  ["fac-tura.com", "132.191.2.61", "01/02/2024", "10:21"],
+  ["fac-tura.com", "170.246.58.51", "02/02/2024", "12:53"],
+  ["fac-tura.com", "38.43.130.119", "03/02/2024", "13:19"],
+  ["fac-tura.com", "38.43.130.119", "04/02/2024", "14:12"],
+  ["fac-tura.com", "38.43.130.119", "05/02/2024", "10:43"],
+  ["fac-tura.com", "38.43.130.119", "06/02/2024", "12:07"],
+  ["Merino, Cahuna, Wilver Enmanuel", "38.43.130.119", "06/02/2024", "19:20"],
+  ["fac-tura.com", "38.43.130.119", "08/02/2024", "13:53"],
+  ["fac-tura.com", "38.43.130.119", "09/02/2024", "11:26"],
+  ["fac-tura.com", "132.251.3.43", "10/02/2024", "10:53"],
+  ["fac-tura.com", "38.43.130.119", "11/02/2024", "10:37"],
+  ["fac-tura.com", "38.25.27.103", "12/02/2024", "09:17"],
+  ["fac-tura.com", "38.43.130.119", "13/02/2024", "11:46"],
+  ["Merino, Cahuna, Wilver Enmanuel", "38.43.130.119", "13/02/2024", "12:00"],
+  ["fac-tura.com", "38.43.130.119", "16/02/2024", "15:45"],
+  ["fac-tura.com", "38.43.130.119", "17/02/2024", "11:14"],
+  ["fac-tura.com", "38.43.130.119", "19/02/2024", "16:39"],
+  ["fac-tura.com", "38.43.130.119", "20/02/2024", "11:12"],
+  ["fac-tura.com", "38.43.130.119", "21/02/2024", "11:02"],
+  ["fac-tura.com", "38.43.130.119", "22/02/2024", "11:39"],
+  ["fac-tura.com", "38.43.130.119", "23/02/2024", "18:59"],
+  ["fac-tura.com", "38.43.130.119", "24/02/2024", "16:18"],
+  ["fac-tura.com", "38.43.130.119", "26/02/2024", "13:11"],
+  ["fac-tura.com", "38.43.130.119", "27/02/2024", "14:06"],
+  ["fac-tura.com", "38.43.130.119", "01/03/2024", "16:13"],
+  ["Merino, Cahuna, Wilver Enmanuel", "38.43.130.119", "01/03/2024", "16:43"],
+  ["fac-tura.com", "38.43.130.119", "02/03/2024", "10:26"],
+  ["fac-tura.com", "132.184.130.186", "05/03/2024", "10:13"],
+].map(([usuario, ip, fecha, horaIngreso]) => ({ usuario, ip, fecha, horaIngreso, refSalida: "", refEntrada: "", horaSalida: "" }));
+
+const dataB = [
+  ["Yupanqui, Barboza, Raysa", "179.6.169.39", "28/02/2026", "01:34"],
+  ["Yupanqui, Barboza, Raysa", "38.43.130.189", "03/03/2026", "16:34"],
+  ["Yupanqui, Barboza, Raysa", "38.43.130.189", "04/03/2026", "17:36"],
+  ["Yupanqui, Barboza, Raysa", "38.43.130.189", "06/03/2026", "13:49"],
+  ["Yupanqui, Barboza, Raysa", "38.43.130.189", "07/03/2026", "11:11"],
+].map(([usuario, ip, fecha, horaIngreso]) => ({ usuario, ip, fecha, horaIngreso, refSalida: "", refEntrada: "", horaSalida: "" }));
+
+const dataC = [
+  ["fac-tura.com", "::1", "16/09/2019", "20:27"],
+  ["fac-tura.com", "::1", "20/01/2021", "12:56"],
+  ["fac-tura.com", "::1", "22/01/2021", "19:48"],
+  ["fac-tura.com", "::1", "23/01/2021", "15:49"],
+  ["fac-tura.com", "::1", "25/01/2021", "21:44"],
+  ["fac-tura.com", "::1", "27/01/2021", "23:54"],
+  ["fac-tura.com", "::1", "07/02/2021", "10:47"],
+  ["fac-tura.com", "::1", "14/06/2021", "11:33"],
+  ["fac-tura.com", "::1", "15/06/2021", "11:23"],
+  ["fac-tura.com", "::1", "13/08/2021", "17:14"],
+  ["fac-tura.com", "::1", "19/08/2021", "21:18"],
+  ["fac-tura.com", "190.233.58.89", "15/12/2023", "22:25"],
+  ["fac-tura.com", "38.43.130.119", "16/12/2023", "10:31"],
+  ["fac-tura.com", "38.25.12.189", "18/12/2023", "13:41"],
+  ["fac-tura.com", "38.43.130.119", "27/12/2023", "17:54"],
+  ["fac-tura.com", "38.43.130.187", "30/12/2023", "10:39"],
+  ["fac-tura.com", "38.43.130.187", "08/01/2024", "17:53"],
+  ["fac-tura.com", "38.43.130.187", "13/01/2024", "11:26"],
+  ["fac-tura.com", "38.43.130.187", "16/01/2024", "14:08"],
+  ["fac-tura.com", "38.43.130.187", "22/01/2024", "14:49"],
+  ["fac-tura.com", "38.43.130.187", "23/01/2024", "10:48"],
+  ["fac-tura.com", "132.251.1.116", "25/01/2024", "10:20"],
+  ["fac-tura.com", "38.43.130.187", "26/01/2024", "15:21"],
+  ["Merino, Cahuna, Wilver Enmanuel", "38.43.130.187", "26/01/2024", "18:15"],
+  ["fac-tura.com", "38.43.130.187", "27/01/2024", "13:36"],
+  ["fac-tura.com", "38.43.130.187", "29/01/2024", "11:26"],
+  ["fac-tura.com", "170.246.58.51", "30/01/2024", "15:02"],
+  ["Merino, Cahuna, Wilver Enmanuel", "170.246.58.51", "30/01/2024", "19:31"],
+  ["fac-tura.com", "132.191.2.61", "01/02/2024", "10:21"],
+  ["fac-tura.com", "170.246.58.51", "02/02/2024", "12:53"],
+  ["fac-tura.com", "38.43.130.119", "03/02/2024", "13:19"],
+  ["fac-tura.com", "38.43.130.119", "04/02/2024", "14:12"],
+  ["fac-tura.com", "38.43.130.119", "05/02/2024", "10:43"],
+  ["fac-tura.com", "38.43.130.119", "06/02/2024", "12:07"],
+  ["Merino, Cahuna, Wilver Enmanuel", "38.43.130.119", "06/02/2024", "19:20"],
+  ["fac-tura.com", "38.43.130.119", "08/02/2024", "13:53"],
+  ["fac-tura.com", "38.43.130.119", "09/02/2024", "11:26"],
+  ["fac-tura.com", "132.251.3.43", "10/02/2024", "10:53"],
+  ["fac-tura.com", "38.43.130.119", "11/02/2024", "10:37"],
+  ["fac-tura.com", "38.25.27.103", "12/02/2024", "09:17"],
+  ["fac-tura.com", "38.43.130.119", "13/02/2024", "11:46"],
+  ["Merino, Cahuna, Wilver Enmanuel", "38.43.130.119", "13/02/2024", "12:00"],
+  ["fac-tura.com", "38.43.130.119", "16/02/2024", "15:45"],
+  ["fac-tura.com", "38.43.130.119", "17/02/2024", "11:14"],
+  ["fac-tura.com", "38.43.130.119", "19/02/2024", "16:39"],
+  ["fac-tura.com", "38.43.130.119", "20/02/2024", "11:12"],
+  ["fac-tura.com", "38.43.130.119", "21/02/2024", "11:02"],
+  ["fac-tura.com", "38.43.130.119", "22/02/2024", "11:39"],
+  ["fac-tura.com", "38.43.130.119", "23/02/2024", "18:59"],
+  ["fac-tura.com", "38.43.130.119", "24/02/2024", "16:18"],
+  ["fac-tura.com", "38.43.130.119", "26/02/2024", "13:11"],
+  ["fac-tura.com", "38.43.130.119", "27/02/2024", "14:06"],
+  ["fac-tura.com", "38.43.130.119", "01/03/2024", "16:13"],
+  ["Merino, Cahuna, Wilver Enmanuel", "38.43.130.119", "01/03/2024", "16:43"],
+  ["fac-tura.com", "38.43.130.119", "02/03/2024", "10:26"],
+  ["fac-tura.com", "132.184.130.186", "05/03/2024", "10:13"],
+  ["fac-tura.com", "38.43.130.119", "07/03/2024", "14:45"],
+  ["fac-tura.com", "38.43.130.119", "09/03/2024", "11:14"],
+  ["fac-tura.com", "38.43.130.119", "11/03/2024", "11:34"],
+].map(([usuario, ip, fecha, horaIngreso]) => ({ usuario, ip, fecha, horaIngreso, refSalida: "", refEntrada: "", horaSalida: "" }));
+
+const dataMerino = [
+  ["Romero, Merino, Alexander Renson", "200.121.132.145", "27/12/2023", "18:05"],
+  ["Merino, Cahuna, Wilver Enmanuel", "38.43.130.187", "26/01/2024", "18:15"],
+  ["Romero, Merino, Alexander Renson", "38.43.130.187", "29/01/2024", "18:02"],
+  ["Romero, Merino, Alexander Renson", "170.246.58.51", "30/01/2024", "19:01"],
+  ["Merino, Cahuna, Wilver Enmanuel", "170.246.58.51", "30/01/2024", "19:31"],
+  ["Merino, Cahuna, Wilver Enmanuel", "38.43.130.119", "06/02/2024", "19:20"],
+  ["Merino, Cahuna, Wilver Enmanuel", "38.43.130.119", "13/02/2024", "12:00"],
+  ["Merino, Cahuna, Wilver Enmanuel", "38.43.130.119", "01/03/2024", "16:43"],
+].map(([usuario, ip, fecha, horaIngreso]) => ({ usuario, ip, fecha, horaIngreso, refSalida: "", refEntrada: "", horaSalida: "" }));
+
+const meses = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
+const diasSemana = ["Lu", "Ma", "Mi", "Ju", "Vi", "Sá", "Do"];
+const usuarios = [
+  "fac-tura.com",
+  "Iturri, Quispe, Smith",
+  "Merino, Cahuna, Wilver Enmanuel",
+  "Romero, Merino, Alexander Renson",
+  "Yupanqui, Barboza, Raysa",
+];
+
+const baseRows = dataA;
+
 const styles = {
-  wrapper: {
-    margin: '-20px',
-    padding: '20px',
-    backgroundColor: '#f5f5f5',
-    minHeight: '100%',
-    fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
-    boxShadow: 'none',
-    border: 'none',
-    borderRadius: '0',
-  },
-  titulo: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '8px',
-    marginBottom: '20px',
-  },
-  tituloH2: {
-    fontSize: '18px',
-    fontWeight: 'bold',
-    color: '#333',
-    margin: 0,
-  },
-  iconoAyuda: {
-    fontSize: '18px',
-    cursor: 'pointer',
-    color: '#17a2b8',
-  },
-  // ─── FILTROS ───────────────────────────────────────────
-  filtrosContainer: {
-    backgroundColor: '#fff',
-    border: '1px solid #e0e0e0',
-    borderRadius: '4px',
-    padding: '15px',
-    marginBottom: '20px',
-  },
-  filtrosRow: {
-    display: 'flex',
-    alignItems: 'flex-end',
-    gap: '15px',
-    flexWrap: 'wrap',
-  },
-  filtroGrupo: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '5px',
-  },
-  filtroGrupoWide: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '5px',
-    flex: '1',
-    minWidth: '200px',
-  },
-  label: {
-    fontSize: '13px',
-    color: '#333',
-    fontWeight: '600',
-  },
-  radioGroup: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '8px',
-    fontSize: '13px',
-    color: '#333',
-    marginBottom: '5px',
-  },
-  radioInput: {
-    width: '15px',
-    height: '15px',
-    cursor: 'pointer',
-  },
-  inputText: {
-    padding: '6px 10px',
-    border: '1px solid #ccc',
-    borderRadius: '3px',
-    fontSize: '14px',
-    backgroundColor: '#fff',
-    color: '#333',
-    outline: 'none',
-    width: '100%',
-  },
-  inputDate: {
-    padding: '6px 10px',
-    border: '1px solid #ccc',
-    borderRadius: '3px',
-    fontSize: '14px',
-    backgroundColor: '#fff',
-    color: '#333',
-    outline: 'none',
-    width: '140px',
-  },
-  yoLabel: {
-    fontSize: '13px',
-    fontWeight: '600',
-    color: '#333',
-    alignSelf: 'flex-end',
-    paddingBottom: '8px',
-  },
-  btnBuscar: {
-    backgroundColor: '#17a2b8',
-    color: '#fff',
-    border: 'none',
-    padding: '8px 18px',
-    borderRadius: '4px',
-    fontSize: '14px',
-    fontWeight: '600',
-    cursor: 'pointer',
-    display: 'flex',
-    alignItems: 'center',
-    gap: '6px',
-    height: '34px',
-  },
-  btnNuevo: {
-    backgroundColor: '#17a2b8',
-    color: '#fff',
-    border: 'none',
-    padding: '8px 14px',
-    borderRadius: '4px',
-    fontSize: '14px',
-    fontWeight: '600',
-    cursor: 'pointer',
-    display: 'flex',
-    alignItems: 'center',
-    gap: '4px',
-    height: '34px',
-  },
-  // ─── TABLA ─────────────────────────────────────────────
-  tablaTitulo: {
-    textAlign: 'center',
-    margin: '15px 0 10px 0',
-  },
-  tablaTituloH3: {
-    fontSize: '16px',
-    fontWeight: 'bold',
-    color: '#333',
-    margin: 0,
-  },
-  tablaContainer: {
-    overflowX: 'auto',
-    marginBottom: '15px',
-  },
-  tabla: {
-    width: '100%',
-    borderCollapse: 'collapse',
-    fontSize: '13px',
-    minWidth: '800px',
-  },
-  th: {
-    background: 'linear-gradient(to bottom, #3a8a9e, #2c7a8e)',
-    color: '#fff',
-    padding: '10px 8px',
-    textAlign: 'center',
-    fontWeight: '600',
-    fontSize: '12px',
-    letterSpacing: '0.3px',
-    whiteSpace: 'nowrap',
-    border: '1px solid #2c7a8e',
-  },
-  td: {
-    padding: '8px',
-    textAlign: 'center',
-    borderBottom: '1px solid #e0e0e0',
-    color: '#333',
-    whiteSpace: 'nowrap',
-  },
-  tdLeft: {
-    padding: '8px',
-    textAlign: 'left',
-    borderBottom: '1px solid #e0e0e0',
-    color: '#333',
-    whiteSpace: 'nowrap',
-  },
-  sinDatos: {
-    textAlign: 'center',
-    padding: '40px 8px',
-    color: '#888',
-    fontStyle: 'italic',
-    fontSize: '14px',
-  },
-  loading: {
-    textAlign: 'center',
-    padding: '30px 8px',
-    color: '#17a2b8',
-    fontSize: '14px',
-  },
-  btnConfirmar: {
-    backgroundColor: 'transparent',
-    border: 'none',
-    cursor: 'pointer',
-    fontSize: '18px',
-    color: '#17a2b8',
-    padding: '2px 6px',
-    borderRadius: '3px',
-    title: 'Confirmar mi salida',
-  },
-  // ─── MODAL NUEVO REGISTRO ──────────────────────────────
-  modalOverlay: {
-    position: 'fixed',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    zIndex: 2000,
-  },
-  modal: {
-    backgroundColor: '#fff',
-    borderRadius: '6px',
-    padding: '25px',
-    width: '450px',
-    maxWidth: '90%',
-    boxShadow: '0 5px 20px rgba(0,0,0,0.3)',
-  },
-  modalTitulo: {
-    fontSize: '16px',
-    fontWeight: 'bold',
-    color: '#333',
-    marginBottom: '15px',
-    borderBottom: '2px solid #17a2b8',
-    paddingBottom: '8px',
-  },
-  modalRow: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '5px',
-    marginBottom: '12px',
-  },
-  modalBotones: {
-    display: 'flex',
-    justifyContent: 'flex-end',
-    gap: '10px',
-    marginTop: '15px',
-  },
-  btnGuardar: {
-    backgroundColor: '#28a745',
-    color: '#fff',
-    border: 'none',
-    padding: '8px 20px',
-    borderRadius: '4px',
-    fontSize: '14px',
-    fontWeight: '600',
-    cursor: 'pointer',
-  },
-  btnCancelar: {
-    backgroundColor: '#6c757d',
-    color: '#fff',
-    border: 'none',
-    padding: '8px 20px',
-    borderRadius: '4px',
-    fontSize: '14px',
-    fontWeight: '600',
-    cursor: 'pointer',
-  },
-  // ─── CONTADOR ──────────────────────────────────────────
-  contador: {
-    textAlign: 'center',
-    fontSize: '13px',
-    color: '#666',
-    marginTop: '5px',
-  },
+  page: { minHeight: "100vh", background: "transparent", padding: "22px 20px 28px", fontFamily: "Arial, Helvetica, sans-serif", color: "#111", boxSizing: "border-box" },
+  wrapper: { width: "100%", maxWidth: "1460px", margin: "0 auto" },
+  titleRow: { display: "flex", alignItems: "center", gap: "8px", marginBottom: "22px", fontSize: "16px", color: "#111" },
+  titleIcon: { width: "14px", height: "14px", borderRadius: "50%", background: "#1d8fe1", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "10px", fontWeight: "bold", lineHeight: 1 },
+  filtersRow: { display: "grid", gridTemplateColumns: "1.55fr 0.72fr 0.72fr auto", gap: "26px", alignItems: "start" },
+  searchBlock: { minWidth: 0 },
+  radiosRow: { display: "flex", alignItems: "center", gap: "8px", marginBottom: "6px", fontSize: "14px", flexWrap: "wrap", color: "#111" },
+  buscarX: { fontWeight: 700, color: "#111" },
+  radioLabel: { display: "inline-flex", alignItems: "center", gap: "4px", fontWeight: 400, color: "#111" },
+  searchInputRow: { display: "flex", alignItems: "center", gap: "4px" },
+  input: { width: "100%", height: "46px", border: "1px solid #c9c9c9", background: "#fff", borderRadius: "2px", padding: "0 12px", fontSize: "15px", outline: "none", boxSizing: "border-box", color: "#111", WebkitTextFillColor: "#111" },
+  yO: { fontWeight: 700, fontSize: "14px", color: "#111" },
+  fieldBlock: { position: "relative", minWidth: 0 },
+  fieldLabel: { display: "block", marginBottom: "6px", fontSize: "14px", color: "#111" },
+  dateBox: { position: "relative" },
+  dateInput: { width: "100%", height: "42px", border: "1px solid #c9c9c9", background: "#fff", borderRadius: "2px", padding: "0 44px 0 12px", fontSize: "15px", outline: "none", boxSizing: "border-box", color: "#111", WebkitTextFillColor: "#111" },
+  calendarBtn: { position: "absolute", top: "50%", right: "6px", transform: "translateY(-50%)", width: "32px", height: "32px", border: "1px solid #c9c9c9", borderRadius: "6px", background: "#fff", color: "#2aa1d3", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" },
+  buttonsCol: { display: "flex", alignItems: "flex-end", gap: "12px", paddingTop: "22px" },
+  searchBtn: { height: "41px", border: "none", borderRadius: "6px", background: "#36a9d5", color: "#fff", padding: "0 16px", display: "flex", alignItems: "center", gap: "8px", fontSize: "15px", cursor: "pointer" },
+  plusBtn: { width: "42px", height: "41px", border: "none", borderRadius: "6px", background: "#36a9d5", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", fontSize: "26px", lineHeight: 1 },
+  sectionTitle: { textAlign: "center", marginTop: "18px", marginBottom: "8px", fontSize: "17px", color: "#111" },
+  tableWrap: { width: "100%", border: "1px solid #d0d0d0", background: "#fff", overflowX: "auto" },
+  tableHeader: { display: "grid", gridTemplateColumns: "2.1fr 1.1fr 1fr 0.9fr 1fr 1fr 0.9fr 50px", background: "#045f89", color: "#fff", minWidth: "1100px", textAlign: "center", alignItems: "center", minHeight: "40px", fontSize: "15px", letterSpacing: "0.2px" },
+  tableRow: { display: "grid", gridTemplateColumns: "2.1fr 1.1fr 1fr 0.9fr 1fr 1fr 0.9fr 50px", minWidth: "1100px", textAlign: "center", alignItems: "center", minHeight: "44px", borderTop: "1px solid #dedede", fontSize: "14px", color: "#111", background: "#fff" },
+  cell: { padding: "12px 8px", boxSizing: "border-box", color: "inherit" },
+  thumbCell: { display: "flex", justifyContent: "center", alignItems: "center", color: "#1188e5" },
+  calendarPopup: { position: "absolute", top: "66px", left: 0, width: "300px", background: "#fff", border: "1px solid #cfcfcf", boxShadow: "0 6px 14px rgba(0,0,0,0.14)", zIndex: 9999, color: "#111" },
+  calTop: { display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 12px" },
+  calArrow: { border: "none", background: "transparent", color: "#2b85e3", width: "18px", height: "18px", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", borderRadius: "50%" },
+  selectsWrap: { display: "flex", alignItems: "center", gap: "2px" },
+  select: { height: "44px", border: "1px solid #d3d3d3", background: "#f5f5f5", fontSize: "16px", color: "#222", padding: "0 14px", outline: "none", borderRadius: "2px", WebkitTextFillColor: "#222" },
+  weekRow: { display: "grid", gridTemplateColumns: "repeat(7, 1fr)", padding: "0 10px 8px", textAlign: "center", fontSize: "15px", color: "#333" },
+  daysGrid: { display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: "2px", padding: "0 10px 10px" },
+  dayBtn: { height: "30px", border: "1px solid #cfcfcf", background: "#fff", color: "#222", fontSize: "15px", cursor: "pointer", borderRadius: "9px" },
+  dayEmpty: { height: "30px", border: "1px solid transparent", background: "transparent" },
+  daySelected: { background: "#efe88d" },
+  resultInfo: { marginTop: "8px", fontSize: "13px", color: "#555" },
 };
 
-// ═══════════════════════════════════════════════════════════
-// COMPONENTE PRINCIPAL - ASISTENCIA
-// ═══════════════════════════════════════════════════════════
-const Asistencia = () => {
-  const [tipoBusqueda, setTipoBusqueda] = useState('1');
-  const [busqueda, setBusqueda] = useState('');
-  const [fechaInicio, setFechaInicio] = useState('');
-  const [fechaFin, setFechaFin] = useState('');
-  const [asistencias, setAsistencias] = useState([]);
-  const [asistenciasFiltradas, setAsistenciasFiltradas] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [buscado, setBuscado] = useState(false);
-  const [hoveredRow, setHoveredRow] = useState(null);
-  const [hoveredBtn, setHoveredBtn] = useState(null);
-  const [showModal, setShowModal] = useState(false);
+function formatDate(date) {
+  const day = String(date.getDate()).padStart(2, "0");
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const year = date.getFullYear();
+  return `${day}/${month}/${year}`;
+}
 
-  // ─── Datos de ejemplo extraídos del HTML ───────────────
-  const datosEjemplo = [
-    { id: 130, usuario: 'fac-tura.com', ip: '190.239.69.145', fecha: '26/02/2026', horaI: '15:15', refSal: '', refEnt: '', horaS: '' },
-    { id: 133, usuario: 'Yupanqui, Barboza, Raysa', ip: '179.6.169.39', fecha: '28/02/2026', horaI: '01:34', refSal: '', refEnt: '', horaS: '' },
-    { id: 135, usuario: 'Yupanqui, Barboza, Raysa', ip: '38.43.130.189', fecha: '03/03/2026', horaI: '16:34', refSal: '', refEnt: '', horaS: '' },
-    { id: 137, usuario: 'Yupanqui, Barboza, Raysa', ip: '38.43.130.189', fecha: '04/03/2026', horaI: '17:36', refSal: '', refEnt: '', horaS: '' },
-    { id: 140, usuario: 'Yupanqui, Barboza, Raysa', ip: '38.43.130.189', fecha: '06/03/2026', horaI: '13:49', refSal: '', refEnt: '', horaS: '' },
-    { id: 141, usuario: 'Yupanqui, Barboza, Raysa', ip: '38.43.130.189', fecha: '07/03/2026', horaI: '11:11', refSal: '', refEnt: '', horaS: '' },
-    { id: 143, usuario: 'fac-tura.com', ip: '38.25.60.95', fecha: '07/03/2026', horaI: '15:01', refSal: '', refEnt: '', horaS: '' },
-    { id: 129, usuario: 'fac-tura.com', ip: '38.253.145.161', fecha: '26/12/2024', horaI: '11:57', refSal: '', refEnt: '', horaS: '' },
-    { id: 128, usuario: 'fac-tura.com', ip: '170.246.58.51', fecha: '06/08/2024', horaI: '11:34', refSal: '', refEnt: '', horaS: '' },
-    { id: 127, usuario: 'fac-tura.com', ip: '170.246.58.51', fecha: '04/08/2024', horaI: '11:50', refSal: '', refEnt: '', horaS: '' },
-    { id: 126, usuario: 'fac-tura.com', ip: '170.246.58.51', fecha: '30/07/2024', horaI: '13:55', refSal: '', refEnt: '', horaS: '' },
-    { id: 125, usuario: 'fac-tura.com', ip: '170.246.58.51', fecha: '26/07/2024', horaI: '19:02', refSal: '', refEnt: '', horaS: '' },
-    { id: 38, usuario: 'Merino, Cahuna, Wilver Enmanuel', ip: '38.43.130.119', fecha: '06/02/2024', horaI: '19:20', refSal: '', refEnt: '', horaS: '' },
-    { id: 25, usuario: 'Merino, Cahuna, Wilver Enmanuel', ip: '38.43.130.187', fecha: '26/01/2024', horaI: '18:15', refSal: '', refEnt: '', horaS: '' },
-    { id: 16, usuario: 'Romero, Merino, Alexander Renson', ip: '200.121.132.145', fecha: '27/12/2023', horaI: '18:05', refSal: '', refEnt: '', horaS: '' },
-    { id: 28, usuario: 'Romero, Merino, Alexander Renson', ip: '38.43.130.187', fecha: '29/01/2024', horaI: '18:02', refSal: '', refEnt: '', horaS: '' },
-    { id: 30, usuario: 'Romero, Merino, Alexander Renson', ip: '170.246.58.51', fecha: '30/01/2024', horaI: '19:01', refSal: '', refEnt: '', horaS: '' },
-    { id: 1, usuario: 'fac-tura.com', ip: '::1', fecha: '16/09/2019', horaI: '20:27', refSal: '', refEnt: '', horaS: '' },
-    { id: 2, usuario: 'fac-tura.com', ip: '::1', fecha: '20/01/2021', horaI: '12:56', refSal: '', refEnt: '', horaS: '' },
-    { id: 8, usuario: 'fac-tura.com', ip: '::1', fecha: '14/06/2021', horaI: '11:33', refSal: '', refEnt: '', horaS: '' },
-    { id: 12, usuario: 'fac-tura.com', ip: '190.233.58.89', fecha: '15/12/2023', horaI: '22:25', refSal: '', refEnt: '', horaS: '' },
-  ];
+function parseDate(value) {
+  if (!value) return new Date(2026, 2, 13);
+  const match = String(value).match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+  if (!match) return new Date(2026, 2, 13);
+  const [, day, month, year] = match;
+  return new Date(Number(year), Number(month) - 1, Number(day));
+}
 
-  // Cargar datos iniciales
-  useEffect(function () {
-    setAsistencias(datosEjemplo);
-    setAsistenciasFiltradas(datosEjemplo);
-  }, []);
+function CalendarInput({ label, value, onChange, isOpen, onOpen, onClose }) {
+  const safeValue = value || "";
+  const parsedDate = useMemo(() => parseDate(safeValue), [safeValue]);
+  const [viewDate, setViewDate] = useState(parsedDate);
 
-  // ─── Parsear fecha dd/mm/yyyy a Date ───────────────────
-  var parseFecha = function (fechaStr) {
-    var partes = fechaStr.split('/');
-    return new Date(parseInt(partes[2]), parseInt(partes[1]) - 1, parseInt(partes[0]));
+  const yearOptions = useMemo(() => {
+    const y = viewDate.getFullYear();
+    return Array.from({ length: 9 }, (_, i) => y - 4 + i);
+  }, [viewDate]);
+
+  const days = useMemo(() => {
+    const year = viewDate.getFullYear();
+    const month = viewDate.getMonth();
+    const first = new Date(year, month, 1);
+    const offset = (first.getDay() + 6) % 7;
+    const total = new Date(year, month + 1, 0).getDate();
+    const items = [];
+    for (let i = 0; i < offset; i += 1) items.push(null);
+    for (let d = 1; d <= total; d += 1) items.push(d);
+    return items;
+  }, [viewDate]);
+
+  const selectedDay = safeValue ? parsedDate.getDate() : null;
+  const selectedMonth = safeValue ? parsedDate.getMonth() : null;
+  const selectedYear = safeValue ? parsedDate.getFullYear() : null;
+
+  const selectDay = (day) => {
+    if (!day) return;
+    const next = new Date(viewDate.getFullYear(), viewDate.getMonth(), day);
+    onChange(formatDate(next));
+    onClose();
   };
 
-  // ─── Buscar ────────────────────────────────────────────
-  var handleBuscar = function () {
-    setLoading(true);
-    setBuscado(true);
-
-    setTimeout(function () {
-      var resultados = asistencias.filter(function (a) {
-        var coincideBusqueda = true;
-        var coincideFechaInicio = true;
-        var coincideFechaFin = true;
-
-        // Filtro por texto
-        if (busqueda.trim() !== '') {
-          var texto = busqueda.toLowerCase();
-          if (tipoBusqueda === '1') {
-            coincideBusqueda = a.usuario.toLowerCase().indexOf(texto) !== -1;
-          } else {
-            coincideBusqueda = a.ip.toLowerCase().indexOf(texto) !== -1;
-          }
-        }
-
-        // Filtro por fecha inicio
-        if (fechaInicio) {
-          var fechaReg = parseFecha(a.fecha);
-          var fechaIni = new Date(fechaInicio);
-          coincideFechaInicio = fechaReg >= fechaIni;
-        }
-
-        // Filtro por fecha fin
-        if (fechaFin) {
-          var fechaReg2 = parseFecha(a.fecha);
-          var fechaFinDate = new Date(fechaFin);
-          coincideFechaFin = fechaReg2 <= fechaFinDate;
-        }
-
-        return coincideBusqueda && coincideFechaInicio && coincideFechaFin;
-      });
-
-      setAsistenciasFiltradas(resultados);
-      setLoading(false);
-    }, 400);
+  const handleBlur = () => {
+    const match = safeValue.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+    if (!match) return;
+    const [, dd, mm, yyyy] = match;
+    const next = new Date(Number(yyyy), Number(mm) - 1, Number(dd));
+    if (!Number.isNaN(next.getTime())) setViewDate(next);
   };
-
-  // ─── Confirmar salida ──────────────────────────────────
-  var handleConfirmarSalida = function (id) {
-    var ahora = new Date();
-    var hora = ahora.getHours().toString().padStart(2, '0') + ':' + ahora.getMinutes().toString().padStart(2, '0');
-
-    setAsistencias(function (prev) {
-      return prev.map(function (a) {
-        if (a.id === id) {
-          return { ...a, horaS: hora };
-        }
-        return a;
-      });
-    });
-
-    setAsistenciasFiltradas(function (prev) {
-      return prev.map(function (a) {
-        if (a.id === id) {
-          return { ...a, horaS: hora };
-        }
-        return a;
-      });
-    });
-
-    alert('Salida confirmada a las ' + hora);
-  };
-
-  // ─── Nuevo registro ────────────────────────────────────
-  var handleNuevoRegistro = function () {
-    var ahora = new Date();
-    var dia = ahora.getDate().toString().padStart(2, '0');
-    var mes = (ahora.getMonth() + 1).toString().padStart(2, '0');
-    var anio = ahora.getFullYear();
-    var hora = ahora.getHours().toString().padStart(2, '0') + ':' + ahora.getMinutes().toString().padStart(2, '0');
-
-    var nuevo = {
-      id: Date.now(),
-      usuario: 'Usuario Actual',
-      ip: '192.168.1.1',
-      fecha: dia + '/' + mes + '/' + anio,
-      horaI: hora,
-      refSal: '',
-      refEnt: '',
-      horaS: '',
-    };
-
-    setAsistencias(function (prev) { return [nuevo, ...prev]; });
-    setAsistenciasFiltradas(function (prev) { return [nuevo, ...prev]; });
-    setShowModal(false);
-    alert('Asistencia registrada: ' + nuevo.fecha + ' a las ' + nuevo.horaI);
-  };
-
-  // ─── Headers tabla ─────────────────────────────────────
-  var headers = ['Usuario', 'IP', 'Fecha', 'Hora I', 'Ref.Sal.', 'Ref.Ent.', 'Hora S.', ''];
 
   return (
-    <div style={styles.wrapper}>
-
-      {/* ═══════ HEADER ═══════ */}
-      <div style={styles.titulo}>
-        <span style={styles.iconoAyuda}>❓</span>
-        <h2 style={styles.tituloH2}>ASISTENCIA PERSONAL</h2>
+    <div style={styles.fieldBlock}>
+      <label style={styles.fieldLabel}>{label}</label>
+      <div style={styles.dateBox}>
+        <input
+          type="text"
+          value={safeValue}
+          onChange={(e) => onChange(e.target.value)}
+          onBlur={handleBlur}
+          placeholder="dd/mm/aaaa"
+          style={styles.dateInput}
+        />
+        <button
+          type="button"
+          onClick={() => {
+            setViewDate(parsedDate);
+            onOpen();
+          }}
+          style={styles.calendarBtn}
+          aria-label={`Abrir calendario de ${label}`}
+        >
+          <CalendarDays size={20} strokeWidth={2} />
+        </button>
       </div>
 
-      {/* ═══════ FILTROS ═══════ */}
-      <div style={styles.filtrosContainer}>
-        <div style={styles.filtrosRow}>
+      {isOpen && (
+        <div style={styles.calendarPopup}>
+          <div style={styles.calTop}>
+            <button type="button" onClick={() => setViewDate(new Date(viewDate.getFullYear(), viewDate.getMonth() - 1, 1))} style={styles.calArrow}>
+              <ChevronLeft size={16} />
+            </button>
 
-          {/* Buscar por */}
-          <div style={styles.filtroGrupoWide}>
-            <label style={styles.label}>BUSCAR X</label>
-            <div style={styles.radioGroup}>
-              <input
-                type="radio"
-                name="tipo"
-                value="1"
-                checked={tipoBusqueda === '1'}
-                onChange={function (e) { setTipoBusqueda(e.target.value); }}
-                style={styles.radioInput}
-              />
-              <span>Usuario /</span>
-              <input
-                type="radio"
-                name="tipo"
-                value="2"
-                checked={tipoBusqueda === '2'}
-                onChange={function (e) { setTipoBusqueda(e.target.value); }}
-                style={styles.radioInput}
-              />
-              <span>Usuario ruc</span>
+            <div style={styles.selectsWrap}>
+              <select value={viewDate.getMonth()} onChange={(e) => setViewDate(new Date(viewDate.getFullYear(), Number(e.target.value), 1))} style={{ ...styles.select, width: "94px" }}>
+                {meses.map((mes, i) => (
+                  <option key={mes} value={i}>{mes}</option>
+                ))}
+              </select>
+              <select value={viewDate.getFullYear()} onChange={(e) => setViewDate(new Date(Number(e.target.value), viewDate.getMonth(), 1))} style={{ ...styles.select, width: "86px" }}>
+                {yearOptions.map((year) => (
+                  <option key={year} value={year}>{year}</option>
+                ))}
+              </select>
             </div>
-            <input
-              type="text"
-              style={styles.inputText}
-              value={busqueda}
-              onChange={function (e) { setBusqueda(e.target.value); }}
-              placeholder="Buscar usuario..."
-              onKeyDown={function (e) { if (e.key === 'Enter') handleBuscar(); }}
-            />
+
+            <button type="button" onClick={() => setViewDate(new Date(viewDate.getFullYear(), viewDate.getMonth() + 1, 1))} style={styles.calArrow}>
+              <ChevronRight size={16} />
+            </button>
           </div>
 
-          <span style={styles.yoLabel}>y/o</span>
-
-          {/* Fecha Inicio */}
-          <div style={styles.filtroGrupo}>
-            <label style={styles.label}>Fecha Inicio</label>
-            <input
-              type="date"
-              style={styles.inputDate}
-              value={fechaInicio}
-              onChange={function (e) { setFechaInicio(e.target.value); }}
-            />
+          <div style={styles.weekRow}>
+            {diasSemana.map((dia) => (
+              <div key={dia}>{dia}</div>
+            ))}
           </div>
 
-          {/* Fecha Fin */}
-          <div style={styles.filtroGrupo}>
-            <label style={styles.label}>Fecha Fin</label>
-            <input
-              type="date"
-              style={styles.inputDate}
-              value={fechaFin}
-              onChange={function (e) { setFechaFin(e.target.value); }}
-            />
-          </div>
-
-          {/* Botones */}
-          <button
-            style={{ ...styles.btnBuscar, ...(hoveredBtn === 'buscar' ? { backgroundColor: '#138496' } : {}) }}
-            onClick={handleBuscar}
-            onMouseEnter={function () { setHoveredBtn('buscar'); }}
-            onMouseLeave={function () { setHoveredBtn(null); }}
-          >🔍 Buscar</button>
-
-          <button
-            style={{ ...styles.btnNuevo, ...(hoveredBtn === 'nuevo' ? { backgroundColor: '#138496' } : {}) }}
-            onClick={function () { setShowModal(true); }}
-            onMouseEnter={function () { setHoveredBtn('nuevo'); }}
-            onMouseLeave={function () { setHoveredBtn(null); }}
-            title="Registrar asistencia"
-          >➕</button>
-        </div>
-      </div>
-
-      {/* ═══════ TÍTULO TABLA ═══════ */}
-      <div style={styles.tablaTitulo}>
-        <h3 style={styles.tablaTituloH3}>LISTADO DE ASISTENCIA</h3>
-      </div>
-
-      {/* ═══════ TABLA ═══════ */}
-      <div style={styles.tablaContainer}>
-        <table style={styles.tabla}>
-          <thead>
-            <tr>
-              {headers.map(function (h, i) {
-                return <th key={i} style={{ ...styles.th, ...(i === 7 ? { width: '5%' } : {}) }}>{h}</th>;
-              })}
-            </tr>
-          </thead>
-          <tbody>
-            {loading ? (
-              <tr><td colSpan="8" style={styles.loading}>Cargando...</td></tr>
-            ) : asistenciasFiltradas.length > 0 ? (
-              asistenciasFiltradas.map(function (a, index) {
-                return (
-                  <tr
-                    key={a.id}
-                    style={{ backgroundColor: hoveredRow === index ? '#CCFF66' : 'transparent' }}
-                    onMouseEnter={function () { setHoveredRow(index); }}
-                    onMouseLeave={function () { setHoveredRow(null); }}
-                  >
-                    <td style={styles.tdLeft}>{a.usuario}</td>
-                    <td style={styles.td}>{a.ip}</td>
-                    <td style={styles.td}>{a.fecha}</td>
-                    <td style={styles.td}>{a.horaI}</td>
-                    <td style={styles.td}>{a.refSal}</td>
-                    <td style={styles.td}>{a.refEnt}</td>
-                    <td style={styles.td}>{a.horaS}</td>
-                    <td style={{ ...styles.td, textAlign: 'right' }}>
-                      {!a.horaS && (
-                        <button
-                          style={{
-                            ...styles.btnConfirmar,
-                            ...(hoveredBtn === 'confirmar-' + a.id ? { color: '#28a745' } : {}),
-                          }}
-                          onClick={function () { handleConfirmarSalida(a.id); }}
-                          onMouseEnter={function () { setHoveredBtn('confirmar-' + a.id); }}
-                          onMouseLeave={function () { setHoveredBtn(null); }}
-                          title="Confirmar mi salida"
-                        >👍</button>
-                      )}
-                    </td>
-                  </tr>
-                );
-              })
-            ) : buscado ? (
-              <tr><td colSpan="8" style={styles.sinDatos}>No se encontraron registros</td></tr>
-            ) : (
-              <tr><td colSpan="8" style={styles.sinDatos}>Cargando registros...</td></tr>
-            )}
-          </tbody>
-        </table>
-      </div>
-
-      {/* ═══════ CONTADOR ═══════ */}
-      <div style={styles.contador}>
-        Total registros: {asistenciasFiltradas.length}
-      </div>
-
-      {/* ═══════ MODAL NUEVO REGISTRO ═══════ */}
-      {showModal && (
-        <div style={styles.modalOverlay} onClick={function () { setShowModal(false); }}>
-          <div style={styles.modal} onClick={function (e) { e.stopPropagation(); }}>
-            <div style={styles.modalTitulo}>Registrar Nueva Asistencia</div>
-
-            <div style={styles.modalRow}>
-              <label style={styles.label}>Usuario</label>
-              <input type="text" style={styles.inputText} value="Usuario Actual" readOnly />
-            </div>
-
-            <div style={styles.modalRow}>
-              <label style={styles.label}>Fecha</label>
-              <input
-                type="text"
-                style={styles.inputText}
-                value={new Date().toLocaleDateString('es-PE')}
-                readOnly
-              />
-            </div>
-
-            <div style={styles.modalRow}>
-              <label style={styles.label}>Hora de Ingreso</label>
-              <input
-                type="text"
-                style={styles.inputText}
-                value={new Date().getHours().toString().padStart(2, '0') + ':' + new Date().getMinutes().toString().padStart(2, '0')}
-                readOnly
-              />
-            </div>
-
-            <div style={styles.modalBotones}>
-              <button
-                style={styles.btnCancelar}
-                onClick={function () { setShowModal(false); }}
-              >Cancelar</button>
-              <button
-                style={styles.btnGuardar}
-                onClick={handleNuevoRegistro}
-              >✅ Registrar Asistencia</button>
-            </div>
+          <div style={styles.daysGrid}>
+            {days.map((day, index) => {
+              const isSelected = day && selectedDay && day === selectedDay && viewDate.getMonth() === selectedMonth && viewDate.getFullYear() === selectedYear;
+              if (!day) return <div key={`empty-${index}`} style={styles.dayEmpty} />;
+              return (
+                <button
+                  key={`${day}-${index}`}
+                  type="button"
+                  onClick={() => selectDay(day)}
+                  style={{ ...styles.dayBtn, ...(isSelected ? styles.daySelected : {}) }}
+                >
+                  {day}
+                </button>
+              );
+            })}
           </div>
         </div>
       )}
     </div>
   );
-};
+}
 
-export default Asistencia;
+function getRowsBySearch(value) {
+  const normalized = value.trim().toLowerCase();
+  if (!normalized) return baseRows;
+  if (normalized === "a") return dataA;
+  if (normalized === "b") return dataB;
+  if (normalized === "c") return dataC;
+  if (normalized === "merino") return dataMerino;
+
+  const merged = [...dataA, ...dataB, ...dataC, ...dataMerino];
+  const unique = merged.filter(
+    (row, index, array) =>
+      index === array.findIndex(
+        (item) => item.usuario === row.usuario && item.ip === row.ip && item.fecha === row.fecha && item.horaIngreso === row.horaIngreso,
+      ),
+  );
+
+  return unique.filter(
+    (row) =>
+      row.usuario.toLowerCase().includes(normalized) ||
+      row.ip.toLowerCase().includes(normalized) ||
+      row.fecha.toLowerCase().includes(normalized),
+  );
+}
+
+function getSavedRows() {
+  try {
+    const raw = localStorage.getItem("asistencia_guardada");
+    return raw ? JSON.parse(raw) : [];
+  } catch {
+    return [];
+  }
+}
+
+function openNuevaAsistenciaTab() {
+  const popup = window.open("", "_blank");
+  if (!popup) return;
+
+  popup.document.write(`
+    <!DOCTYPE html>
+    <html lang="es">
+      <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Asistencia Personal</title>
+        <style>
+          body {
+            font-family: Arial, Helvetica, sans-serif;
+            margin: 0;
+            background: #ffffff;
+            color: #111;
+            padding: 14px 18px;
+          }
+          .title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 16px;
+            margin-bottom: 22px;
+          }
+          .help {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #1d8fe1;
+            color: white;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: bold;
+          }
+          .grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr) auto;
+            gap: 10px;
+            align-items: end;
+          }
+          label {
+            display: block;
+            margin-bottom: 4px;
+            font-weight: 700;
+            font-size: 14px;
+          }
+          input, select {
+            width: 100%;
+            height: 42px;
+            border: 1px solid #c9c9c9;
+            border-radius: 3px;
+            padding: 0 10px;
+            box-sizing: border-box;
+            font-size: 14px;
+          }
+          .btns {
+            display: flex;
+            gap: 10px;
+            padding-bottom: 3px;
+          }
+          .btn {
+            width: 50px;
+            height: 47px;
+            border: none;
+            border-radius: 8px;
+            background: #36a9d5;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+          }
+          .btn.small {
+            font-size: 20px;
+          }
+          .msg {
+            margin-top: 14px;
+            font-size: 14px;
+            color: #0b7d28;
+          }
+        </style>
+      </head>
+      <body>
+        <div class="title"><span class="help">?</span><span>ASISTENCIA PERSONAL</span></div>
+        <form id="formAsistencia">
+          <div class="grid">
+            <div>
+              <label>Usuario</label>
+              <select name="usuario">
+                <option value=""></option>
+                ${usuarios.map((u) => `<option value="${u}">${u}</option>`).join("")}
+              </select>
+            </div>
+            <div>
+              <label>Fecha</label>
+              <input type="text" name="fecha" placeholder="dd/mm/aaaa" />
+            </div>
+            <div>
+              <label>Hora I</label>
+              <input type="text" name="horaI" placeholder="hh:mm" />
+            </div>
+            <div>
+              <label>Ref.Salida</label>
+              <input type="text" name="refSalida" />
+            </div>
+            <div>
+              <label>Ref.Entrada</label>
+              <input type="text" name="refEntrada" />
+            </div>
+            <div>
+              <label>Hora F</label>
+              <input type="text" name="horaF" placeholder="hh:mm" />
+            </div>
+            <div class="btns">
+              <button type="submit" class="btn small">💾</button>
+              <button type="button" class="btn" onclick="window.close()">↩</button>
+            </div>
+          </div>
+        </form>
+        <div id="msg" class="msg"></div>
+
+        <script>
+          const form = document.getElementById('formAsistencia');
+          const msg = document.getElementById('msg');
+          form.addEventListener('submit', function (e) {
+            e.preventDefault();
+            const fd = new FormData(form);
+            const row = {
+              usuario: fd.get('usuario') || '',
+              ip: '::1',
+              fecha: fd.get('fecha') || '',
+              horaIngreso: fd.get('horaI') || '',
+              refSalida: fd.get('refSalida') || '',
+              refEntrada: fd.get('refEntrada') || '',
+              horaSalida: fd.get('horaF') || ''
+            };
+            const list = JSON.parse(localStorage.getItem('asistencia_guardada') || '[]');
+            list.unshift(row);
+            localStorage.setItem('asistencia_guardada', JSON.stringify(list));
+            msg.textContent = 'Asistencia guardada correctamente';
+            form.reset();
+          });
+        <\/script>
+      </body>
+    </html>
+  `);
+  popup.document.close();
+}
+
+export default function Asistencia() {
+  const [fechaInicio, setFechaInicio] = useState("");
+  const [fechaFin, setFechaFin] = useState("");
+  const [openCalendar, setOpenCalendar] = useState(null);
+  const [busqueda, setBusqueda] = useState("usuario");
+  const [texto, setTexto] = useState("a");
+  const [rows, setRows] = useState([...baseRows, ...getSavedRows()]);
+  const [hoverRow, setHoverRow] = useState(null);
+
+  useEffect(() => {
+    const syncRows = () => {
+      setRows([...getRowsBySearch(texto), ...getSavedRows()]);
+    };
+    window.addEventListener("storage", syncRows);
+    return () => window.removeEventListener("storage", syncRows);
+  }, [texto]);
+
+  const handleBuscar = () => {
+    setRows([...getRowsBySearch(texto), ...getSavedRows()]);
+  };
+
+  return (
+    <div style={styles.page} onClick={() => setOpenCalendar(null)}>
+      <div style={styles.wrapper} onClick={(e) => e.stopPropagation()}>
+        <div style={styles.titleRow}>
+          <div style={styles.titleIcon}>?</div>
+          <span>ASISTENCIA PERSONAL</span>
+        </div>
+
+        <div style={styles.filtersRow}>
+          <div style={styles.searchBlock}>
+            <div style={styles.radiosRow}>
+              <span style={styles.buscarX}>BUSCAR X</span>
+              <label style={styles.radioLabel}>
+                <input type="radio" name="busqueda" checked={busqueda === "usuario"} onChange={() => setBusqueda("usuario")} />
+                <span>Usuario</span>
+              </label>
+              <span>/</span>
+              <label style={styles.radioLabel}>
+                <input type="radio" name="busqueda" checked={busqueda === "ruc"} onChange={() => setBusqueda("ruc")} />
+                <span>Usuario ruc</span>
+              </label>
+            </div>
+
+            <div style={styles.searchInputRow}>
+              <input type="text" value={texto} onChange={(e) => setTexto(e.target.value)} style={styles.input} placeholder="Escribe a, b, c o Merino" />
+              <span style={styles.yO}>y/o</span>
+            </div>
+            <div style={styles.resultInfo}>Resultados: {rows.length}</div>
+          </div>
+
+          <CalendarInput
+            label="Fecha Inicio"
+            value={fechaInicio}
+            onChange={setFechaInicio}
+            isOpen={openCalendar === "inicio"}
+            onOpen={() => setOpenCalendar("inicio")}
+            onClose={() => setOpenCalendar(null)}
+          />
+
+          <CalendarInput
+            label="Fecha Fin"
+            value={fechaFin}
+            onChange={setFechaFin}
+            isOpen={openCalendar === "fin"}
+            onOpen={() => setOpenCalendar("fin")}
+            onClose={() => setOpenCalendar(null)}
+          />
+
+          <div style={styles.buttonsCol}>
+            <button type="button" style={styles.searchBtn} onClick={handleBuscar}>
+              <Search size={20} />
+              <span>Buscar</span>
+            </button>
+            <button type="button" style={styles.plusBtn} onClick={openNuevaAsistenciaTab}>
+              +
+            </button>
+          </div>
+        </div>
+
+        <div style={styles.sectionTitle}>LISTADO DE ASISTENCIA</div>
+
+        <div style={styles.tableWrap}>
+          <div style={styles.tableHeader}>
+            <div style={styles.cell}>USUARIO</div>
+            <div style={styles.cell}>IP</div>
+            <div style={styles.cell}>FECHA</div>
+            <div style={styles.cell}>HORA I</div>
+            <div style={styles.cell}>REF.SAL.</div>
+            <div style={styles.cell}>REF.ENT.</div>
+            <div style={styles.cell}>HORA S.</div>
+            <div style={styles.cell}></div>
+          </div>
+
+          {rows.map((row, index) => (
+            <div
+              key={`${row.usuario}-${row.ip}-${row.fecha}-${row.horaIngreso}-${index}`}
+              style={{ ...styles.tableRow, background: hoverRow === index ? "#eef7ff" : "#fff", cursor: "pointer" }}
+              onMouseEnter={() => setHoverRow(index)}
+              onMouseLeave={() => setHoverRow(null)}
+            >
+              <div style={styles.cell}>{row.usuario}</div>
+              <div style={styles.cell}>{row.ip}</div>
+              <div style={styles.cell}>{row.fecha}</div>
+              <div style={styles.cell}>{row.horaIngreso}</div>
+              <div style={styles.cell}>{row.refSalida}</div>
+              <div style={styles.cell}>{row.refEntrada}</div>
+              <div style={styles.cell}>{row.horaSalida}</div>
+              <div style={styles.thumbCell} title="Confirmar mi salida">
+                <ThumbsUp size={17} fill="currentColor" strokeWidth={1.6} />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
